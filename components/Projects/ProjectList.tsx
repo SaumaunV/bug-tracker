@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import React from "react";
 import { useQuery} from "@apollo/client";
 import Project from "./Project";
@@ -17,9 +17,9 @@ function ProjectList() {
   } else console.log(data);
 
   return (
-    <SimpleGrid p={10} columns={{sm: 2, md: 3, lg: 4}} spacing={10} minChildWidth="250px">
+    <Flex p={10} flexWrap='wrap' >
       {data?.projects.map(project => <Project key={project.id} id={project.id} name={project.name} description={project.description} />)}
-    </SimpleGrid>
+    </Flex>
   );
 }
 
