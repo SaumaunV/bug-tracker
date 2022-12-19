@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, useDisclosure } from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, useDisclosure, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useMutation } from "@apollo/client";
 import { GET_PROJECTS, CREATE_PROJECT } from '../../graphql/queries';
@@ -9,7 +9,8 @@ interface Props {
 }
 
 function ProjectModal({isOpen, onClose}: Props) {
-    const [createProject] = useMutation(CREATE_PROJECT, {
+    const toast = useToast();
+    const [createProject, { error }] = useMutation(CREATE_PROJECT, {
         refetchQueries: [
             {query: GET_PROJECTS},
             'GetAllProjects'
@@ -23,10 +24,9 @@ function ProjectModal({isOpen, onClose}: Props) {
       <ModalOverlay />
       <ModalContent
         as="form"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          console.log("submitted");
-          createProject({
+          await createProject({
             variables: {
               input: {
                 name: projectName,
@@ -34,6 +34,19 @@ function ProjectModal({isOpen, onClose}: Props) {
               },
             },
           });
+          error
+            ? toast({
+                title: "Error creating project.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              })
+            : toast({
+                title: "Project created successfully.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+              });
           setProjectName("");
           setProjectDescription("");
           onClose();
@@ -63,10 +76,7 @@ function ProjectModal({isOpen, onClose}: Props) {
           <Button colorScheme={"gray"} mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button
-            type="submit"
-            colorScheme={"blue"}
-          >
+          <Button type="submit" colorScheme={"blue"}>
             Create Project
           </Button>
         </ModalFooter>
