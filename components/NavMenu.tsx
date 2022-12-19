@@ -1,57 +1,87 @@
 import React from "react";
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
-  Container,
   Flex,
   Icon,
+  useColorMode,
 } from "@chakra-ui/react";
 import {
   AiFillBug,
-  AiFillDashboard,
   AiOutlineDashboard,
+  AiOutlineFolder,
 } from "react-icons/ai";
 import { TbNotes } from 'react-icons/tb';
 import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+import { useRouter } from "next/router";
 
 function NavMenu() {
+  const {colorMode} = useColorMode();
+  const router = useRouter();
+  const bgHover = colorMode === "light" ? "blackAlpha.200" :  "whiteAlpha.200";
+  const borderColor = colorMode === "light" ? "blackAlpha.500" : "whiteAlpha.500";
+
   return (
-    <Box h="100vh" w="15%" shadow="base">
-      <Flex alignItems="center" justify="center" p={4}>
+    <Box
+      h="100vh"
+      w="15%"
+      shadow="base"
+      borderRight={colorMode === "light" ? "" : "1px"}
+      borderColor="black"
+    >
+      <Flex alignItems="center" justify="center" p={4} borderBottom='1px solid' borderColor={borderColor}>
         <Icon as={AiFillBug} boxSize={8} color="blue.500" />
-        <Box ml={2}>Bug Tracker</Box>
+        <Box ml={3}>
+          <Box>Bug</Box>
+          <Box>Tracker</Box>
+        </Box>
       </Flex>
 
-      <Accordion defaultIndex={[0]} allowMultiple>
-        <AccordionItem p={1}>
-          <AccordionButton>
-            <Icon as={AiOutlineDashboard} boxSize={5} />
-            <Box ml={3}>Dashboard</Box>
-          </AccordionButton>
-        </AccordionItem>
+      <Flex
+        w="100%"
+        p={3}
+        cursor="pointer"
+        _hover={{ bg: bgHover }}
+        transitionDuration="200ms"
+        onClick={() => router.push("/dashboard")}
+      >
+        <Icon as={AiOutlineDashboard} boxSize={5} ml={2} />
+        <Box ml={3}>Dashboard</Box>
+      </Flex>
 
-        <AccordionItem p={1}>
-          <AccordionButton>
-            <Icon as={TbNotes} boxSize={5} />
-            <Box ml={3} flex={1} textAlign="left">
-              Tickets
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel></AccordionPanel>
-        </AccordionItem>
+      <Flex
+        w="100%"
+        p={3}
+        cursor="pointer"
+        _hover={{ bg: bgHover }}
+        transitionDuration="200ms"
+        onClick={() => router.push("/projects")}
+      >
+        <Icon as={AiOutlineFolder} boxSize={5} ml={2} />
+        <Box ml={3}>My Projects</Box>
+      </Flex>
 
-        <AccordionItem p={1}>
-          <AccordionButton>
-            <Icon as={MdOutlineAdminPanelSettings} boxSize={5} />
-            <Box ml={3}>Admin</Box>
-          </AccordionButton>
-        </AccordionItem>
-      </Accordion>
+      <Flex
+        w="100%"
+        p={3}
+        cursor="pointer"
+        _hover={{ bg: bgHover }}
+        transitionDuration="200ms"
+        onClick={() => router.push("/tickets")}
+      >
+        <Icon as={TbNotes} boxSize={5} ml={2} />
+        <Box ml={3}>My Tickets</Box>
+      </Flex>
+
+      <Flex
+        w="100%"
+        p={3}
+        cursor="pointer"
+        _hover={{ bg: bgHover }}
+        transitionDuration="200ms"
+      >
+        <Icon as={MdOutlineAdminPanelSettings} boxSize={5} ml={2} />
+        <Box ml={3}>Admin</Box>
+      </Flex>
     </Box>
   );
 }
