@@ -1,33 +1,33 @@
-import { gql } from "@apollo/client";
+import { gql } from "../src/__generated__/gql";
 
-export const GET_PROJECTS = gql`
-  query GetAllProjects {
-    projects {
+export const GET_PROJECTS = gql(/* GraphQL */ `
+  query GetAllProjects($id: ID!) {
+    user_projects(id: $id) {
       id
       name
       description
     }
   }
-`;
+`);
 
-export const CREATE_PROJECT = gql`
+export const CREATE_PROJECT = gql(/* GraphQL */`
   mutation CreateProject($input: CreateProjectInput!) {
     createProject(input: $input) {
       name
       description
     }
   }
-`;
+`);
 
-export const DELETE_PROJECT = gql`
+export const DELETE_PROJECT = gql(/* GraphQL */`
   mutation DeleteProject($id: ID!) {
     deleteProject(id: $id) {
       id
     }
   }
-`;
+`);
 
-export const GET_TICKETS = gql`
+export const GET_TICKETS = gql(/* GraphQL */`
   query GetAllTickets {
     tickets {
       id
@@ -39,9 +39,9 @@ export const GET_TICKETS = gql`
       developer_id
     }
   }
-`
+`);
 
-export const CREATE_TICKET = gql`
+export const CREATE_TICKET = gql(/* GraphQL */`
   mutation CreateTicket($input: CreateTicketInput!) {
     createTicket(input: $input) {
       name
@@ -52,12 +52,12 @@ export const CREATE_TICKET = gql`
       developer_id
     }
   }
-`;
+`);
 
-export const DELETE_TICKET = gql`
+export const DELETE_TICKET = gql(/* GraphQL */`
   mutation DeleteTicket($id: ID!) {
     deleteTicket(id: $id) {
       id
     }
   }
-`;
+`);
