@@ -1,5 +1,13 @@
 import { gql } from "../src/__generated__/gql";
 
+export const GET_USERS = gql(/* GraphQL */ `
+  query GetAllUsers {
+    users {
+      email
+    }
+  }
+`);
+
 export const GET_PROJECTS = gql(/* GraphQL */ `
   query GetAllProjects($id: ID!) {
     user_projects(id: $id) {
