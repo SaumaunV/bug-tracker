@@ -1,42 +1,69 @@
-import { AddIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { Box, Button, Center, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, useColorMode, useDisclosure } from '@chakra-ui/react';
-import React from 'react'
-import { CgProfile } from 'react-icons/cg';
-import ProjectModal from './ProjectModal';
-import TicketModal from './TicketModal';
+import { AddIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useColorMode,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import React from "react";
+import { CgProfile } from "react-icons/cg";
+import ProjectModal from "./Projects/ProjectModal";
+import TicketModal from "./Tickets/TicketModal";
 
 function Header() {
-    const { colorMode, toggleColorMode } = useColorMode();
-    const { isOpen: isOpenProject, onOpen: onOpenProject, onClose: onCloseProject } = useDisclosure();
-    const { isOpen: isOpenTicket, onOpen: onOpenTicket, onClose: onCloseTicket } = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const {
+    isOpen: isOpenProject,
+    onOpen: onOpenProject,
+    onClose: onCloseProject,
+  } = useDisclosure({id: "ticket-modal"});
+  const {
+    isOpen: isOpenTicket,
+    onOpen: onOpenTicket,
+    onClose: onCloseTicket,
+  } = useDisclosure();
+  const router = useRouter();
+
+  const path = router.pathname.substring(1);
 
   return (
     <Flex
       alignItems="center"
       h={14}
-      borderBottom={colorMode === "light" ? "" : "1px"}
-      borderBottomColor="black"
+      borderBottom={colorMode === "light" ? "1px" : "1px"}
+      borderBottomColor={colorMode === "light" ? "lightgray" : "black"}
       shadow={colorMode === "light" ? "" : "base"}
     >
       <Box flex={1} ml={4} fontSize="2xl" fontWeight="bold">
-        Dashboard
+        {path[0].toUpperCase() + path.substring(1)}
       </Box>
-      <Button
-        mr={5}
-        rightIcon={<AddIcon />}
-        colorScheme="messenger"
-        onClick={onOpenProject}
-      >
-        New Project
-      </Button>
-      <Button
-        mr={5}
-        rightIcon={<AddIcon />}
-        colorScheme="orange"
-        onClick={onOpenTicket}
-      >
-        New Ticket
-      </Button>
+      {path === "projects" && (
+        <Button
+          mr={5}
+          rightIcon={<AddIcon />}
+          colorScheme="messenger"
+          onClick={onOpenProject}
+        >
+          New Project
+        </Button>
+      )}
+      {path === "tickets" && (
+        <Button
+          mr={5}
+          rightIcon={<AddIcon />}
+          colorScheme="orange"
+          onClick={onOpenTicket}
+        >
+          New Ticket
+        </Button>
+      )}
       <ProjectModal isOpen={isOpenProject} onClose={onCloseProject} />
       <TicketModal isOpen={isOpenTicket} onClose={onCloseTicket} />
       <Button
@@ -69,4 +96,4 @@ function Header() {
   );
 }
 
-export default Header
+export default Header;
