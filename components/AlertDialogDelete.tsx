@@ -1,19 +1,21 @@
 import { useMutation } from '@apollo/client';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure, useToast } from '@chakra-ui/react';
-import { useRef } from 'react'
+import React, { useRef } from 'react'
 import { DELETE_PROJECT, DELETE_TICKET, GET_PROJECTS, GET_TICKETS } from '../graphql/queries';
+import { useUser } from '../UserProvider';
 
 interface Props {
-  id: number | string;
+  id: string;
   isOpen: boolean;
   onClose: () => void;
   project?: boolean
 }
 
 function AlertDialogDelete({ id, isOpen, onClose, project }: Props) {
+    const { user } = useUser();
     const toast = useToast();
     const [deleteProject, { error: errorProject }] = useMutation(DELETE_PROJECT, {
-      refetchQueries: [{ query: GET_PROJECTS }, "GetAllProjects"],
+      refetchQueries: [{ query: GET_PROJECTS, variables: {id: user?.id} }, "GetAllProjects"],
     });
     const [deleteTicket, { error: errorTicket }] = useMutation(DELETE_TICKET, {
       refetchQueries: [{ query: GET_TICKETS }, "GetAllTickets"],
