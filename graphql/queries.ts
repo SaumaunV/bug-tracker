@@ -10,10 +10,12 @@ export const GET_USERS = gql(/* GraphQL */ `
 
 export const GET_PROJECTS = gql(/* GraphQL */ `
   query GetAllProjects($id: ID!) {
-    user_projects(id: $id) {
-      id
-      name
-      description
+    user(id: $id) {
+      projects {
+        id
+        name
+        description
+      }
     }
   }
 `);

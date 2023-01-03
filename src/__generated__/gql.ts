@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query GetAllUsers {\n    users {\n      email\n    }\n  }\n": types.GetAllUsersDocument,
-    "\n  query GetAllProjects($id: ID!) {\n    user_projects(id: $id) {\n      id\n      name\n      description\n    }\n  }\n": types.GetAllProjectsDocument,
+    "\n  query GetAllProjects($id: ID!) {\n    user(id: $id) {\n      projects {\n        id\n        name\n        description\n      }\n    }\n  }\n": types.GetAllProjectsDocument,
     "\n  mutation CreateProject($input: CreateProjectInput!) {\n    createProject(input: $input) {\n      name\n      description\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n": types.DeleteProjectDocument,
     "\n  query GetAllTickets {\n    tickets {\n      id\n      name\n      description\n      type\n      status\n      priority\n      developer_id\n    }\n  }\n": types.GetAllTicketsDocument,
@@ -29,7 +29,7 @@ export function gql(source: "\n  query GetAllUsers {\n    users {\n      email\n
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetAllProjects($id: ID!) {\n    user_projects(id: $id) {\n      id\n      name\n      description\n    }\n  }\n"): (typeof documents)["\n  query GetAllProjects($id: ID!) {\n    user_projects(id: $id) {\n      id\n      name\n      description\n    }\n  }\n"];
+export function gql(source: "\n  query GetAllProjects($id: ID!) {\n    user(id: $id) {\n      projects {\n        id\n        name\n        description\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetAllProjects($id: ID!) {\n    user(id: $id) {\n      projects {\n        id\n        name\n        description\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
