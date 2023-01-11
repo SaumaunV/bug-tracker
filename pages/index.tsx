@@ -10,6 +10,7 @@ import {
   AlertIcon,
   AlertTitle,
   Spinner,
+  Center,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
@@ -23,9 +24,6 @@ export default function Home() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
-
-  if (user) router.push("/dashboard");
-  if (userLoading) return <Spinner />;
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -49,7 +47,13 @@ export default function Home() {
     console.log(respData);
   };
 
-  return (
+  if (userLoading) return (
+    <Center height='100vh'>
+      <Spinner />
+    </Center>
+  );
+  else if (user) router.push("/dashboard");
+  else return (
     <Flex
       h="100vh"
       bgColor="gray.800"
