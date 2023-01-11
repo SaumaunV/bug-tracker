@@ -3,7 +3,51 @@ import { gql } from "../src/__generated__/gql";
 export const GET_USERS = gql(/* GraphQL */ `
   query GetAllUsers {
     users {
+      username
       email
+      role
+    }
+  }
+`);
+
+export const GET_USER_ALL_TICKETS = gql(/* GraphQL */ `
+  query GetAllUserTickets($id: ID!) {
+    user(id: $id) {
+      allTickets {
+        type
+        status
+        priority
+      }
+    }
+  }
+`); 
+
+export const GET_USER_NAME = gql(/* GraphQL */ `
+  query GetUserName($id: ID!) {
+    user(id: $id) {
+      username
+    }
+  }
+`);
+
+export const GET_PROJECT = gql(/* GraphQL */ `
+  query GetProject($id: ID!) {
+    project(id: $id) {
+      name
+      description
+      users {
+        username
+        role
+      }
+      tickets {
+        id
+        name
+        description
+        type
+        status
+        priority
+        user_id
+      }
     }
   }
 `);
@@ -46,7 +90,36 @@ export const GET_TICKETS = gql(/* GraphQL */`
       type
       status
       priority
-      developer_id
+      user_id
+    }
+  }
+`);
+
+export const GET_PROJECT_TICKETS = gql(/* GraphQL */ `
+  query GetProjectTickets($id: ID!) {
+    projectTickets(id: $id) {
+      id
+      name
+      description
+      type
+      status
+      priority
+      user_id
+    }
+  }
+`);
+export const GET_USER_TICKETS = gql(/* GraphQL */ `
+  query GetUserTickets($id: ID!) {
+    userTickets(id: $id) {
+      id
+      name
+      description
+      type
+      status
+      priority
+      created_at
+      user_id
+      project_id
     }
   }
 `);
@@ -59,7 +132,7 @@ export const CREATE_TICKET = gql(/* GraphQL */`
       type
       status
       priority
-      developer_id
+      user_id
     }
   }
 `);
