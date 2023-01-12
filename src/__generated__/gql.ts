@@ -13,10 +13,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
-    "\n  query GetAllUsers {\n    users {\n      username\n      email\n      role\n    }\n  }\n": types.GetAllUsersDocument,
+    "\n  query GetAllUsers {\n    users {\n      id\n      username\n      email\n      role\n    }\n  }\n": types.GetAllUsersDocument,
     "\n  query GetAllUserTickets($id: ID!) {\n    user(id: $id) {\n      allTickets {\n        type\n        status\n        priority\n      }\n    }\n  }\n": types.GetAllUserTicketsDocument,
     "\n  query GetUserName($id: ID!) {\n    user(id: $id) {\n      username\n    }\n  }\n": types.GetUserNameDocument,
-    "\n  query GetProject($id: ID!) {\n    project(id: $id) {\n      name\n      description\n      users {\n        username\n        role\n      }\n      tickets {\n        id\n        name\n        description\n        type\n        status\n        priority\n        user_id\n      }\n    }\n  }\n": types.GetProjectDocument,
+    "\n  mutation DeleteUser($id: ID!) {\n    deleteUser(id: $id) {\n      id\n    }\n  }\n": types.DeleteUserDocument,
+    "\n  query GetProjectUsers($id: ID!) {\n    project(id: $id) {\n      users {\n        id\n        username\n      }\n    }\n  }\n": types.GetProjectUsersDocument,
+    "\n  query GetProject($id: ID!) {\n    project(id: $id) {\n      name\n      description\n      users {\n        username\n        role\n      }\n      tickets {\n        id\n        name\n        description\n        type\n        status\n        priority\n        user_id\n        created_at\n        project_id\n      }\n    }\n  }\n": types.GetProjectDocument,
     "\n  query GetAllProjects($id: ID!) {\n    user(id: $id) {\n      projects {\n        id\n        name\n        description\n      }\n    }\n  }\n": types.GetAllProjectsDocument,
     "\n  mutation CreateProject($input: CreateProjectInput!) {\n    createProject(input: $input) {\n      name\n      description\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n": types.DeleteProjectDocument,
@@ -30,7 +32,7 @@ const documents = {
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetAllUsers {\n    users {\n      username\n      email\n      role\n    }\n  }\n"): (typeof documents)["\n  query GetAllUsers {\n    users {\n      username\n      email\n      role\n    }\n  }\n"];
+export function gql(source: "\n  query GetAllUsers {\n    users {\n      id\n      username\n      email\n      role\n    }\n  }\n"): (typeof documents)["\n  query GetAllUsers {\n    users {\n      id\n      username\n      email\n      role\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -42,7 +44,15 @@ export function gql(source: "\n  query GetUserName($id: ID!) {\n    user(id: $id
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetProject($id: ID!) {\n    project(id: $id) {\n      name\n      description\n      users {\n        username\n        role\n      }\n      tickets {\n        id\n        name\n        description\n        type\n        status\n        priority\n        user_id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetProject($id: ID!) {\n    project(id: $id) {\n      name\n      description\n      users {\n        username\n        role\n      }\n      tickets {\n        id\n        name\n        description\n        type\n        status\n        priority\n        user_id\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation DeleteUser($id: ID!) {\n    deleteUser(id: $id) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteUser($id: ID!) {\n    deleteUser(id: $id) {\n      id\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetProjectUsers($id: ID!) {\n    project(id: $id) {\n      users {\n        id\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetProjectUsers($id: ID!) {\n    project(id: $id) {\n      users {\n        id\n        username\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetProject($id: ID!) {\n    project(id: $id) {\n      name\n      description\n      users {\n        username\n        role\n      }\n      tickets {\n        id\n        name\n        description\n        type\n        status\n        priority\n        user_id\n        created_at\n        project_id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetProject($id: ID!) {\n    project(id: $id) {\n      name\n      description\n      users {\n        username\n        role\n      }\n      tickets {\n        id\n        name\n        description\n        type\n        status\n        priority\n        user_id\n        created_at\n        project_id\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

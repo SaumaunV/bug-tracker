@@ -3,6 +3,7 @@ import { gql } from "../src/__generated__/gql";
 export const GET_USERS = gql(/* GraphQL */ `
   query GetAllUsers {
     users {
+      id
       username
       email
       role
@@ -30,6 +31,25 @@ export const GET_USER_NAME = gql(/* GraphQL */ `
   }
 `);
 
+export const DELETE_USER = gql(/* GraphQL */ `
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      id
+    }
+  }
+`);
+
+export const GET_PROJECT_USERS = gql(/* GraphQL */ `
+  query GetProjectUsers($id: ID!) {
+    project(id: $id) {
+      users {
+        id
+        username
+      }
+    }
+  }
+`);
+
 export const GET_PROJECT = gql(/* GraphQL */ `
   query GetProject($id: ID!) {
     project(id: $id) {
@@ -47,6 +67,8 @@ export const GET_PROJECT = gql(/* GraphQL */ `
         status
         priority
         user_id
+        created_at
+        project_id
       }
     }
   }
