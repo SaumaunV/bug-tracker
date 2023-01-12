@@ -25,12 +25,11 @@ export const UserContext = createContext<ContextValue>({
 
 
 export default function UserProvider({ children }: Props) {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User>(null);
 
     useEffect(() => {
         const getUser = async () =>{ 
-            setLoading(true);
             try {
                 const resp = await fetch("http://localhost:4000/user", {
                   credentials: "include"
