@@ -17,26 +17,36 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { useMutation } from '@apollo/client';
-import { CREATE_TICKET, GET_TICKETS } from '../../graphql/queries';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_TICKET, GET_PROJECTS, GET_PROJECT_USERS, GET_TICKETS } from '../../graphql/queries';
 import { Ticket } from '../../src/__generated__/graphql';
+import { useUser } from '../../UserProvider';
 
 interface Props {
   ticket?: Ticket;
   isOpen: boolean;
   onClose: () => void;
+  title: string;
+  buttonText: string;
+  userId?: string;
 }
 
-function TicketModal({ isOpen, onClose, ticket}: Props) {
+function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId}: Props) {
+  const { user } = useUser();
   const toast = useToast();
   const [createTicket, {error}] = useMutation(CREATE_TICKET, {
     refetchQueries: [{ query: GET_TICKETS }, "GetAllTickets"],
   });
-  const [ticketName, setTicketName] = useState("");
-  const [ticketDescription, setTicketDescription] = useState("");
-  const [ticketType, setTicketType] = useState("");
-  const [ticketStatus, setTicketStatus] = useState("");
-  const [ticketPriority, setTicketPriority] = useState("");
+  const projects = useQuery(GET_PROJECTS, {variables: {id: user?.id!}});
+  
+  const [projectID, setProjectID] = useState(ticket ? ticket.project_id : projects?.data?.user?.projects ? projects.data.user.projects[0].id : "");
+  const [userID, setUserID] = useState(userId || "");
+  const [ticketName, setTicketName] = useState(ticket ? ticket.name : "");
+  const [ticketDescription, setTicketDescription] = useState(ticket ? ticket.description : "");
+  const [ticketType, setTicketType] = useState(ticket ? ticket.type : "");
+  const [ticketStatus, setTicketStatus] = useState(ticket ? ticket.status : "");
+  const [ticketPriority, setTicketPriority] = useState(ticket ? ticket.priority : "");
+  const users = useQuery(GET_PROJECT_USERS, { variables: { id: projectID } });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -53,7 +63,8 @@ function TicketModal({ isOpen, onClose, ticket}: Props) {
                 type: ticketType,
                 status: ticketStatus,
                 priority: ticketPriority,
-                developer_id: "e449f94c-cd5e-4bc8-814a-dac5f8f8ca0f",
+                user_id: userID,
+                project_id: projectID,
               },
             },
           });
@@ -78,23 +89,39 @@ function TicketModal({ isOpen, onClose, ticket}: Props) {
           onClose();
         }}
       >
-        <ModalHeader>Create Ticket</ModalHeader>
+        <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isRequired>
-            <FormLabel>Name</FormLabel>
+            <FormLabel>Project Name</FormLabel>
+            <Select
+              value={projectID}
+              onChange={(e) => setProjectID(e.target.value)}
+              mb={3}
+            >
+              {projects.data?.user?.projects?.map((project) => (
+                <option value={project.id}>{project.name}</option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl isRequired>
+            <FormLabel>Ticket Name</FormLabel>
             <Input
               type="text"
               mb={3}
               value={ticketName}
               onChange={(e) => setTicketName(e.target.value)}
             />
+          </FormControl>
+          <FormControl isRequired>
             <FormLabel>Description</FormLabel>
             <Textarea
               mb={3}
               value={ticketDescription}
               onChange={(e) => setTicketDescription(e.target.value)}
             />
+          </FormControl>
+          <FormControl isRequired>
             <FormLabel>Type</FormLabel>
             <RadioGroup
               value={ticketType}
@@ -106,6 +133,8 @@ function TicketModal({ isOpen, onClose, ticket}: Props) {
                 Bug
               </Radio>
             </RadioGroup>
+          </FormControl>
+          <FormControl isRequired>
             <FormLabel>Priority</FormLabel>
             <Select
               placeholder="Select priority"
@@ -118,6 +147,8 @@ function TicketModal({ isOpen, onClose, ticket}: Props) {
               <option value="medium">Medium</option>
               <option value="low">Low</option>
             </Select>
+          </FormControl>
+          <FormControl isRequired>
             <FormLabel>Status</FormLabel>
             <Select
               placeholder="Select status"
@@ -132,13 +163,26 @@ function TicketModal({ isOpen, onClose, ticket}: Props) {
               <option value="unassigned">Unassigned</option>
             </Select>
           </FormControl>
+          <FormControl>
+            <FormLabel>Assigned User</FormLabel>
+            <Select
+              defaultValue="unassigned"
+              value={userID}
+              onChange={(e) => setUserID(e.target.value)}
+            >
+              <option value="unassigned">Unassigned</option>
+              {users.data?.project.users?.map((user) => (
+                <option value={user.id}>{user.username}</option>
+              ))}
+            </Select>
+          </FormControl>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme={"gray"} mr={3} onClick={onClose}>
             Cancel
           </Button>
           <Button type="submit" colorScheme={"orange"}>
-            Create Ticket
+            {buttonText}
           </Button>
         </ModalFooter>
       </ModalContent>
