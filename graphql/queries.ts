@@ -39,6 +39,14 @@ export const DELETE_USER = gql(/* GraphQL */ `
   }
 `);
 
+export const UPDATE_USER = gql(/* GraphQL */ `
+  mutation UpdateUser($role: String!, $id: ID!) {
+    updateUser(role: $role ,id: $id) {
+      role
+    }
+  }
+`);
+
 export const GET_PROJECT_USERS = gql(/* GraphQL */ `
   query GetProjectUsers($id: ID!) {
     project(id: $id) {
@@ -70,6 +78,14 @@ export const GET_PROJECT = gql(/* GraphQL */ `
         created_at
         project_id
       }
+    }
+  }
+`);
+
+export const GET_PROJECT_NAME = gql(/* GraphQL */ `
+  query GetProjectName($id: ID!) {
+    project(id: $id) {
+      name
     }
   }
 `);
