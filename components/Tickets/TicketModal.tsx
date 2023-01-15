@@ -18,7 +18,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_TICKET, GET_PROJECTS, GET_PROJECT_USERS, GET_TICKETS } from '../../graphql/queries';
+import { CREATE_TICKET, GET_PROJECTS, GET_PROJECT_USERS, GET_TICKETS, UPDATE_TICKET } from '../../graphql/queries';
 import { Ticket } from '../../src/__generated__/graphql';
 import { useUser } from '../../UserProvider';
 
@@ -29,9 +29,10 @@ interface Props {
   title: string;
   buttonText: string;
   userId?: string;
+  update? : boolean
 }
 
-function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId}: Props) {
+function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, update}: Props) {
   const { user } = useUser();
   const toast = useToast();
   const [createTicket, {error}] = useMutation(CREATE_TICKET, {
@@ -48,6 +49,11 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId}: Prop
   const [ticketPriority, setTicketPriority] = useState(ticket ? ticket.priority : "");
   const users = useQuery(GET_PROJECT_USERS, { variables: { id: projectID } });
 
+  const [updateTicket, { error: updateTicketError }] = useMutation(
+    UPDATE_TICKET,
+    { refetchQueries: [{ query: GET_TICKETS }, "GetAllTickets"] }
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
@@ -55,7 +61,16 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId}: Prop
         as="form"
         onSubmit={async (e) => {
           e.preventDefault();
-          await createTicket({
+          update ? await updateTicket({variables: {input: {
+                id: ticket?.id!,
+                name: ticketName,
+                description: ticketDescription,
+                type: ticketType,
+                status: ticketStatus,
+                priority: ticketPriority,
+                user_id: userID || null,
+                project_id: projectID,
+              },}}) :  await createTicket({
             variables: {
               input: {
                 name: ticketName,
@@ -63,20 +78,20 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId}: Prop
                 type: ticketType,
                 status: ticketStatus,
                 priority: ticketPriority,
-                user_id: userID,
+                user_id: userID || null,
                 project_id: projectID,
               },
             },
           });
-          error
+          error || updateTicketError
             ? toast({
-                title: "Error creating ticket.",
+                title: update ? "Error updating Ticket": "Error creating ticket",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
               })
             : toast({
-                title: "Ticket created successfully.",
+                title: update ? "Ticket updated" : "Ticket created successfully",
                 status: "success",
                 duration: 5000,
                 isClosable: true,
@@ -166,11 +181,11 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId}: Prop
           <FormControl>
             <FormLabel>Assigned User</FormLabel>
             <Select
-              defaultValue="unassigned"
+              defaultValue=""
               value={userID}
               onChange={(e) => setUserID(e.target.value)}
             >
-              <option value="unassigned">Unassigned</option>
+              <option value="">Unassigned</option>
               {users.data?.project.users?.map((user) => (
                 <option value={user.id}>{user.username}</option>
               ))}
