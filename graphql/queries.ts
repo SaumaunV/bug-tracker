@@ -64,6 +64,7 @@ export const GET_PROJECT = gql(/* GraphQL */ `
       name
       description
       users {
+        id
         username
         role
       }
@@ -178,6 +179,14 @@ export const CREATE_TICKET = gql(/* GraphQL */`
 export const DELETE_TICKET = gql(/* GraphQL */`
   mutation DeleteTicket($id: ID!) {
     deleteTicket(id: $id) {
+      id
+    }
+  }
+`);
+
+export const UPDATE_TICKET = gql(/* GraphQL */ `
+  mutation UpdateTicket($input: UpdateTicketInput!) {
+    updateTicket(input: $input) {
       id
     }
   }
