@@ -4,6 +4,7 @@ import { Badge, IconButton, Td, Tr, useColorMode, useDisclosure} from '@chakra-u
 import { GET_PROJECT, GET_USER_NAME } from '../../graphql/queries';
 import { Ticket } from '../../src/__generated__/graphql';
 import AlertDialogDelete from '../AlertDialogDelete';
+import TicketInfoModal from './TicketInfoModal';
 import TicketModal from './TicketModal';
 
 interface Props {
@@ -13,6 +14,11 @@ interface Props {
 function Ticket({ ticket }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenEditTicket, onOpen: onOpenEditTicket, onClose: onCloseEditTicket } = useDisclosure({id: "ticket-modal"});
+  const {
+    isOpen: isOpenViewTicket,
+    onOpen: onOpenViewTicket,
+    onClose: onCloseViewTicket,
+  } = useDisclosure();
   const project = useQuery(GET_PROJECT, {variables: {id: ticket.project_id}});
   const user = useQuery(GET_USER_NAME, {variables: {id: ticket.user_id!}});
   const {colorMode} = useColorMode();
@@ -36,24 +42,23 @@ function Ticket({ ticket }: Props) {
         <Td>{ticket.created_at}</Td>
         <Td>
           <IconButton
-            aria-label="Delete Ticket"
+            aria-label="View Ticket"
             icon={<ViewIcon />}
             colorScheme={colorMode === 'dark' ? "facebook" : "gray"}
-            onClick={onOpen}
+            onClick={onOpenViewTicket}
           />
           <IconButton
-            aria-label="Delete Ticket"
+            aria-label="Edit Ticket"
             icon={<EditIcon />}
             colorScheme={colorMode === 'dark' ? "facebook" : "gray"}
-            //variant='outline'
-            onClick={onOpen}
+            onClick={onOpenEditTicket}
             ml={2}
           />
           <IconButton
             aria-label="Delete Ticket"
             icon={<DeleteIcon />}
             colorScheme="red"
-            onClick={onOpenEditTicket}
+            onClick={onOpen}
             ml={10}
           />
         </Td>
@@ -63,7 +68,10 @@ function Ticket({ ticket }: Props) {
         ticket={ticket}
         isOpen={isOpenEditTicket}
         onClose={onCloseEditTicket}
+        title='Edit Ticket'
+        buttonText='Save'
       />
+      <TicketInfoModal ticket={ticket} isOpen={isOpenViewTicket} onClose={onCloseViewTicket}/>
     </>
   );
 }
