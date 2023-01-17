@@ -1,17 +1,18 @@
 import { useMutation } from '@apollo/client';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure, useToast } from '@chakra-ui/react';
 import React, { useRef } from 'react'
-import { DELETE_PROJECT, DELETE_TICKET, GET_PROJECTS, GET_TICKETS } from '../graphql/queries';
+import { DELETE_PROJECT, DELETE_TICKET, DELETE_USER, GET_PROJECTS, GET_TICKETS, GET_USERS } from '../graphql/queries';
 import { useUser } from '../UserProvider';
 
 interface Props {
   id: string;
   isOpen: boolean;
   onClose: () => void;
-  project?: boolean
+  type: string;
+  title: string;
 }
 
-function AlertDialogDelete({ id, isOpen, onClose, project }: Props) {
+function AlertDialogDelete({ id, isOpen, onClose, type, title }: Props) {
     const { user } = useUser();
     const toast = useToast();
     const [deleteProject, { error: errorProject }] = useMutation(DELETE_PROJECT, {
@@ -20,41 +21,31 @@ function AlertDialogDelete({ id, isOpen, onClose, project }: Props) {
     const [deleteTicket, { error: errorTicket }] = useMutation(DELETE_TICKET, {
       refetchQueries: [{ query: GET_TICKETS }, "GetAllTickets"],
     });
+    const [deleteUser, { error: errorUser }] = useMutation(DELETE_USER, {
+      refetchQueries: [{ query: GET_USERS }, "GetAllUsers"],
+    });
     const cancelRef = useRef(null);
 
-    const handleDeleteProject = async () => {
-        await deleteProject({ variables: { id } });
-        errorProject
-          ? toast({
-              title: "Error deleting project.",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            })
-          : toast({
-              title: "Project deleted successfully.",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-            });
-    }
-
-    const handleDeleteTicket = async () => {
-        await deleteTicket({ variables: { id } });
-        errorTicket
-          ? toast({
-              title: "Error deleting ticket.",
-              status: "error",
-              duration: 5000,
-              isClosable: true,
-            })
-          : toast({
-              title: "Ticket deleted successfully.",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-            });
-    }
+    const handleDelete = async () => {
+      type === "project"
+        ? await deleteProject({ variables: { id } })
+        : type === "ticket"
+        ? await deleteTicket({ variables: { id } })
+        : await deleteUser({ variables: { id } })
+      errorProject || errorTicket || errorUser
+        ? toast({
+            title: `Error deleting ${type}.`,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          })
+        : toast({
+            title: `${type} deleted successfully.`,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+    };
 
   return (
     <AlertDialog
@@ -65,7 +56,7 @@ function AlertDialogDelete({ id, isOpen, onClose, project }: Props) {
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete {project ? 'Project' : 'Ticket'}
+            {title}
           </AlertDialogHeader>
 
           <AlertDialogBody>
@@ -78,7 +69,7 @@ function AlertDialogDelete({ id, isOpen, onClose, project }: Props) {
             </Button>
             <Button
               colorScheme="red"
-              onClick={project ? handleDeleteProject : handleDeleteTicket}
+              onClick={handleDelete}
               ml={3}
             >
               Delete
