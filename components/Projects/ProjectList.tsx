@@ -1,26 +1,33 @@
-import { Flex } from "@chakra-ui/react";
-import React from "react";
-import { useQuery} from "@apollo/client";
+import { Flex, useColorMode } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { useLazyQuery } from "@apollo/client";
 import Project from "./Project";
 import { GET_PROJECTS } from "../../graphql/queries";
-
-type Project = {
-  projects: [{ id: string; name: string; description: string }];
-};
+import { useUser } from "../../UserProvider";
 
 function ProjectList() {
-  const { data, loading, error } = useQuery<Project>(GET_PROJECTS);
+  const { user } = useUser();
+  const [getProjects, {data, loading, error} ] = useLazyQuery(GET_PROJECTS);
+  const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    if (user)
+      getProjects({
+        variables: { id: user.id},
+      });
+  }, [user]);
 
   if (loading) return <h1>data is loading</h1>;
   else if (error) {
-    console.log(error);
-  } else console.log(data);
+    return <h1>Error has occurred</h1>;
+  }
 
   return (
-    <Flex p={10} flexWrap='wrap' >
-      {data?.projects.map(project => <Project key={project.id} id={project.id} name={project.name} description={project.description} />)}
+    <Flex flex={1} p={10} shadow='inner' flexWrap='wrap' bg={colorMode === 'light' ? "gray.50": ""} >
+      {data?.user?.projects?.map(project => <Project key={project.id} id={project.id} name={project.name} description={project.description} />)}
     </Flex>
   );
+  
 }
 
 export default ProjectList;
