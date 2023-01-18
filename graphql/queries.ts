@@ -47,6 +47,14 @@ export const UPDATE_USER = gql(/* GraphQL */ `
   }
 `);
 
+export const ADD_USERS = gql(/* GraphQL */ `
+  mutation AddUsers($input: AddUsersInput!) {
+    addUsers(input: $input) {
+      id
+    }
+  }
+`);
+
 export const GET_PROJECT_USERS = gql(/* GraphQL */ `
   query GetProjectUsers($id: ID!) {
     project(id: $id) {
@@ -61,6 +69,7 @@ export const GET_PROJECT_USERS = gql(/* GraphQL */ `
 export const GET_PROJECT = gql(/* GraphQL */ `
   query GetProject($id: ID!) {
     project(id: $id) {
+      id
       name
       description
       users {
