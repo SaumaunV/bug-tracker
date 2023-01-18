@@ -11,6 +11,8 @@ type ContextValue = {
   user: User;
   loading: boolean;
   setUser: React.Dispatch<React.SetStateAction<User>>;
+  isDemo: boolean;
+  setIsDemo: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 interface Props {
@@ -21,12 +23,15 @@ export const UserContext = createContext<ContextValue>({
   user: null,
   loading: false,
   setUser: () => null,
+  isDemo: false,
+  setIsDemo: () => false,
 });
 
 
 export default function UserProvider({ children }: Props) {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User>(null);
+    const [isDemo, setIsDemo] = useState(false);
 
     useEffect(() => {
         const getUser = async () =>{ 
@@ -45,7 +50,7 @@ export default function UserProvider({ children }: Props) {
 
     }, [])
   return (
-    <UserContext.Provider value={{user, loading, setUser}}>
+    <UserContext.Provider value={{user, loading, setUser, isDemo, setIsDemo}}>
       {children}
     </UserContext.Provider>
   );
