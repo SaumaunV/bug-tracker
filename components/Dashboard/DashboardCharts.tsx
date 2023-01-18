@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box, SimpleGrid, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import {
   Chart as ChartJS,
   Tooltip,
@@ -8,9 +8,13 @@ import {
   BarController,
   BarElement,
   Title,
+  ArcElement,
+  Legend
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
-import { GET_TICKETS } from "../../graphql/queries";
+import { Bar} from "react-chartjs-2";
+import { GET_USERS, GET_USER_ALL_TICKETS } from "../../graphql/queries";
+import { useUser } from "../../UserProvider";
+import DoughnutChart from "../DoughnutChart";
 
 ChartJS.register(
   CategoryScale,
@@ -18,7 +22,9 @@ ChartJS.register(
   BarElement,
   BarController,
   Tooltip,
-  Title
+  Title,
+  ArcElement,
+  Legend
 );
 
 const TicketPriorities = Object.seal(["Immediate", "High", "Medium", "Low"]);
@@ -29,6 +35,7 @@ const TicketStatuses = Object.seal([
   "Testing",
   "Resolved",
 ]);
+const TicketTypes = Object.seal(["Feature", "Bug"]);
 const Colors = {
   red: "rgb(255, 99, 132, 0.5)",
   redDark: "rgb(255, 99, 132)",
@@ -49,8 +56,20 @@ const Colors = {
 
 
 function DashboardCharts() {
+  const { user } = useUser();
   const { colorMode } = useColorMode();
-  const { data, loading, error } = useQuery(GET_TICKETS);
+  const { data, loading, error } = useQuery(GET_USER_ALL_TICKETS, {variables: {id: user ? user.id : ""}});
+  const users = useQuery(GET_USERS);
+
+  let adminCount = 0;
+  let developerCount = 0;
+  users.data?.users?.forEach((user) =>
+    user.role === "admin" ? adminCount++ : developerCount++
+  );
+  
+  let featureCount = 0;
+  let bugCount = 0;
+  data?.user?.allTickets?.forEach(ticket => ticket.type === "feature" ? featureCount++ : bugCount++);
 
   const options = {
     plugins: {
@@ -58,7 +77,9 @@ function DashboardCharts() {
         display: true,
         text: "Tickets by Priority",
         color: colorMode === "dark" ? "white" : "",
+        font: { size: 16 },
       },
+      legend: { display: false },
     },
     responsive: true,
     maintainAspectRatio: false,
@@ -82,15 +103,17 @@ function DashboardCharts() {
   if (error) return <h1>Error</h1>;
   return (
     <div>
-      <SimpleGrid columns={2} spacing={32} p={10}>
+      <Flex p={10}>
         <Box
+          flex={1}
           minHeight="300px"
           shadow="md"
           border={colorMode === "light" ? "1px solid" : ""}
           borderColor="gray.100"
-          bg={colorMode === "dark" ? "gray.700" : ""}
+          bg={colorMode === "dark" ? "gray.700" : "white"}
           rounded="md"
           p="5"
+          mr={10}
         >
           <Bar
             data={{
@@ -100,7 +123,7 @@ function DashboardCharts() {
                   label: "Number of Tickets",
                   data: TicketPriorities.map(
                     (priority) =>
-                      data?.tickets?.filter(
+                      data?.user?.allTickets?.filter(
                         (ticket) => ticket.priority === priority.toLowerCase()
                       ).length
                   ),
@@ -122,13 +145,15 @@ function DashboardCharts() {
           />
         </Box>
         <Box
+          flex={1}
           minHeight="300px"
           shadow="md"
           border={colorMode === "light" ? "1px solid" : ""}
           borderColor="gray.100"
-          bg={colorMode === "dark" ? "gray.700" : ""}
+          bg={colorMode === "dark" ? "gray.700" : "white"}
           rounded="md"
           p="5"
+          ml={10}
         >
           <Bar
             data={{
@@ -138,7 +163,7 @@ function DashboardCharts() {
                   label: "Number of Tickets",
                   data: TicketStatuses.map(
                     (status) =>
-                      data?.tickets?.filter(
+                      data?.user?.allTickets?.filter(
                         (ticket) => ticket.status === status.toLowerCase()
                       ).length
                   ),
@@ -163,10 +188,36 @@ function DashboardCharts() {
                 },
               ],
             }}
-            options={options}
+            options={{
+              ...options,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Tickets by Status",
+                  color: colorMode === "dark" ? "white" : "",
+                  font: { size: 16 },
+                },
+                legend: { display: false },
+              },
+            }}
           />
         </Box>
-      </SimpleGrid>
+      </Flex>
+      <Flex p={10}>
+        <DoughnutChart
+          labels={TicketTypes}
+          label={"Number of Tickets"}
+          data={[featureCount, bugCount]}
+          title="Tickets by Type"
+          first        
+        />
+        <DoughnutChart
+          labels={['Admin', 'Developer']}
+          label={"Number of Users"}
+          data={[adminCount, developerCount]}
+          title="Users by Role"
+        />
+      </Flex>
     </div>
   );
 }
