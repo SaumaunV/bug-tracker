@@ -1,19 +1,22 @@
-import { Flex } from '@chakra-ui/react';
-import React from 'react'
-import Header from '../../components/Header';
-import NavMenu from '../../components/NavMenu';
-import TicketList from '../../components/Tickets/TicketList';
+import { useLazyQuery } from "@apollo/client";
+import React, {useEffect} from "react";
+import TicketList from "../../components/Tickets/TicketList";
+import { GET_USER_TICKETS } from "../../graphql/queries";
+import { useUser } from "../../UserProvider";
+
 
 function Tickets() {
-  return (
-    <Flex>
-      <NavMenu />
-      <Flex direction="column" flex={1}>
-        <Header />
-        <TicketList />
-      </Flex>
-    </Flex>
-  );
+  const {user} = useUser();
+  const [getUserTickets, {data, loading, error}] = useLazyQuery(GET_USER_TICKETS);
+  console.log(user);
+
+  useEffect(() => {
+    if(user) {
+      getUserTickets({variables: {id: user.id}});
+    };
+  }, [user])
+
+  return <TicketList padding={10} tickets={data?.userTickets}/>;
 }
 
-export default Tickets
+export default Tickets;
