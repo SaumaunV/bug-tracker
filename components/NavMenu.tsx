@@ -13,8 +13,11 @@ import {
 import { TbNotes } from 'react-icons/tb';
 import { MdOutlineAdminPanelSettings } from 'react-icons/md';
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { useUser } from "../UserProvider";
 
 function NavMenu() {
+  const { user } = useUser();
   const {colorMode} = useColorMode();
   const router = useRouter();
   const bgHover = colorMode === "light" ? "blackAlpha.200" :  "whiteAlpha.200";
@@ -28,7 +31,13 @@ function NavMenu() {
       borderRight={colorMode === "light" ? "" : "1px"}
       borderColor="black"
     >
-      <Flex alignItems="center" justify="center" p={4} borderBottom='1px solid' borderColor={borderColor}>
+      <Flex
+        alignItems="center"
+        justify="center"
+        p={4}
+        borderBottom="1px solid"
+        borderColor={borderColor}
+      >
         <Icon as={AiFillBug} boxSize={8} color="blue.500" />
         <Box ml={3}>
           <Box>Bug</Box>
@@ -71,17 +80,20 @@ function NavMenu() {
         <Icon as={TbNotes} boxSize={5} ml={2} />
         <Box ml={3}>My Tickets</Box>
       </Flex>
-
-      <Flex
-        w="100%"
-        p={3}
-        cursor="pointer"
-        _hover={{ bg: bgHover }}
-        transitionDuration="200ms"
-      >
-        <Icon as={MdOutlineAdminPanelSettings} boxSize={5} ml={2} />
-        <Box ml={3}>Admin</Box>
-      </Flex>
+      {user?.role === "admin" && (
+        <Link href={"/admin"}>
+          <Flex
+            w="100%"
+            p={3}
+            cursor="pointer"
+            _hover={{ bg: bgHover }}
+            transitionDuration="200ms"
+          >
+            <Icon as={MdOutlineAdminPanelSettings} boxSize={5} ml={2} />
+            <Box ml={3}>Admin</Box>
+          </Flex>
+        </Link>
+      )}
     </Box>
   );
 }
