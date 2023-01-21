@@ -9,7 +9,7 @@ import { ReactNode } from 'react';
 import Layout from "../components/Layout";
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://bugtracker-backend.onrender.com/graphql",
   cache: new InMemoryCache(),  
 });
 
