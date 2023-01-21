@@ -4,19 +4,24 @@ import {
   AlertIcon,
   AlertTitle,
   Button,
+  Center,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
+  Spinner,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useUser } from "../UserProvider";
 
+const link = "https://bugtracker-backend.onrender.com/register";
+//http://localhost:4000/register
+
 function Register() {
-  const { user, setUser } = useUser();
+  const { user, loading: userLoading, setUser } = useUser();
   const router = useRouter();  
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -24,11 +29,9 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [invalidRegister, setInvalidRegister] = useState(false);
 
-  if (user) router.push("/dashboard");
-
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const resp = await fetch("http://localhost:4000/register", {
+    const resp = await fetch(link, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +51,14 @@ function Register() {
     console.log(respData);
   };
 
-  return (
+  if (userLoading)
+    return (
+      <Center height="100vh">
+        <Spinner />
+      </Center>
+    );
+  else if (user) router.push("/dashboard");
+  else return (
     <Flex h="100vh" bgColor="gray.800" alignItems="center" justify="center">
       <Flex
         as="form"
