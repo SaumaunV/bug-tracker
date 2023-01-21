@@ -17,8 +17,11 @@ import { FormEvent, useState } from "react";
 import { NextPage } from "next";
 import Link from "next/link";
 
+const link = "https://bugtracker-backend.onrender.com/login";
+//http://localhost:4000/login
+
 export default function Home() {
-  const { user, loading: userLoading, setUser } = useUser();
+  const { user, loading: userLoading, setUser, setIsDemo } = useUser();
   const router = useRouter();
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -27,7 +30,7 @@ export default function Home() {
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const resp = await fetch("http://localhost:4000/login", {
+    const resp = await fetch(link, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,6 +50,27 @@ export default function Home() {
     console.log(respData);
   };
 
+  const handleLoginDemo = async (username: string, password: string) => {
+    const resp = await fetch(link, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+      credentials: "include",
+    });
+    const respData = await resp.json();
+    if (respData) {
+      setLoading(true);
+      setUser(respData);
+      setIsDemo(true);
+    } else setInvalidLogin(true);  
+    console.log(respData);
+  }
+
   if (userLoading) return (
     <Center height='100vh'>
       <Spinner />
@@ -54,12 +78,7 @@ export default function Home() {
   );
   else if (user) router.push("/dashboard");
   else return (
-    <Flex
-      h="100vh"
-      bgColor="gray.800"
-      alignItems="center"
-      justify="center"
-    >
+    <Flex h="100vh" bgColor="gray.800" alignItems="center" justify="center">
       <Flex
         as="form"
         onSubmit={handleSubmit}
@@ -70,7 +89,7 @@ export default function Home() {
       >
         <Heading mb={10}>Login</Heading>
         {invalidLogin && (
-          <Alert status="error" variant='subtle' mb={5}>
+          <Alert status="error" variant="subtle" mb={5}>
             <AlertIcon />
             <AlertTitle>Invalid user info</AlertTitle>
           </Alert>
@@ -98,12 +117,35 @@ export default function Home() {
           w={"100%"}
           my={7}
           type="submit"
-          bgColor="teal"
-          _hover={{ bgColor: "teal.500" }}
+          bgColor="blue.500"
+          _hover={{ bgColor: "blue.600" }}
         >
           Sign In
         </Button>
-        <Link href='/register' style={{textDecoration: 'underline'}}>Register</Link>
+        <Button
+          isLoading={loading}
+          w={"100%"}
+          type="submit"
+          bgColor="orange.500"
+          _hover={{ bgColor: "orange.600" }}
+          onClick={() => handleLoginDemo("DemoAdmin", "demoadmin!")}
+        >
+          Sign In as Demo Admin
+        </Button>
+        <Button
+          isLoading={loading}
+          w={"100%"}
+          my={3}
+          type="submit"
+          bgColor="green.500"
+          _hover={{ bgColor: "green.600" }}
+          onClick={() => handleLoginDemo("DemoDeveloper", "demodeveloper!")}
+        >
+          Sign In as Demo User
+        </Button>
+        <Link href="/register" style={{ textDecoration: "underline" }}>
+          Register
+        </Link>
       </Flex>
     </Flex>
   );
