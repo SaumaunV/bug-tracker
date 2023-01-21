@@ -14,16 +14,18 @@ import {
 import { useRouter } from "next/router";
 import React from "react";
 import { CgProfile } from "react-icons/cg";
+import { useUser } from "../UserProvider";
 import ProjectModal from "./Projects/ProjectModal";
 import TicketModal from "./Tickets/TicketModal";
 
 function Header() {
+  const {user, setUser} = useUser();
   const { colorMode, toggleColorMode } = useColorMode();
   const {
     isOpen: isOpenProject,
     onOpen: onOpenProject,
     onClose: onCloseProject,
-  } = useDisclosure({id: "ticket-modal"});
+  } = useDisclosure();
   const {
     isOpen: isOpenTicket,
     onOpen: onOpenTicket,
@@ -33,6 +35,28 @@ function Header() {
 
   const path = router.pathname.substring(1);
 
+  async function handleLogout (e: React.MouseEvent<HTMLButtonElement, MouseEvent>)  {
+    e.preventDefault();
+    try {
+      const resp = await fetch(
+        "https://bugtracker-backend.onrender.com/logout",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const respData = await resp.json();
+      setUser(null);
+      console.log(respData);
+    } catch (error) {
+      console.log("error has occurred with logout");
+    }
+    
+  }
+
   return (
     <Flex
       alignItems="center"
@@ -41,8 +65,12 @@ function Header() {
       borderBottomColor={colorMode === "light" ? "lightgray" : "black"}
       shadow={colorMode === "light" ? "" : "base"}
     >
-      <Box flex={1} ml={4} fontSize="2xl" fontWeight="bold">
-        {path[0].toUpperCase() + path.substring(1)}
+      <Box flex={1} ml={10} fontSize="2xl" fontWeight="bold">
+        {path.includes("projects/")
+          ? "Project Details"
+          : path.includes("tickets/")
+          ? "Ticket Details"
+          : path[0].toUpperCase() + path.substring(1)}
       </Box>
       {path === "projects" && (
         <Button
@@ -64,8 +92,18 @@ function Header() {
           New Ticket
         </Button>
       )}
-      <ProjectModal isOpen={isOpenProject} onClose={onCloseProject} />
-      <TicketModal isOpen={isOpenTicket} onClose={onCloseTicket} />
+      {path === "projects" && (
+        <ProjectModal isOpen={isOpenProject} onClose={onCloseProject} />
+      )}
+      {path === "tickets" && (
+        <TicketModal
+          isOpen={isOpenTicket}
+          onClose={onCloseTicket}
+          title="Create Ticket"
+          buttonText="CreateTicket"
+        />
+      )}
+
       <Button
         p={2}
         mr={3}
@@ -88,7 +126,7 @@ function Header() {
         <MenuList>
           <MenuItem>Profile</MenuItem>
           <a href="/api/auth/logout">
-            <MenuItem>Sign out</MenuItem>
+            <MenuItem onClick={handleLogout}>Sign out</MenuItem>
           </a>
         </MenuList>
       </Menu>
