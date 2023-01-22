@@ -2,6 +2,7 @@ import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButt
 import { useState } from 'react';
 import { useMutation } from "@apollo/client";
 import { GET_PROJECTS, CREATE_PROJECT } from '../../graphql/queries';
+import { useUser } from '../../UserProvider';
 
 interface Props {
     isOpen: boolean;
@@ -9,10 +10,11 @@ interface Props {
 }
 
 function ProjectModal({isOpen, onClose}: Props) {
+  const { user, isDemo } = useUser();
     const toast = useToast();
     const [createProject, { error }] = useMutation(CREATE_PROJECT, {
         refetchQueries: [
-            {query: GET_PROJECTS},
+            {query: GET_PROJECTS, variables: {id: user?.id}},
             'GetAllProjects'
         ]
     });
@@ -29,6 +31,7 @@ function ProjectModal({isOpen, onClose}: Props) {
           await createProject({
             variables: {
               input: {
+                user_id: user?.id!,
                 name: projectName,
                 description: projectDescription,
               },
@@ -65,6 +68,8 @@ function ProjectModal({isOpen, onClose}: Props) {
               onChange={(e) => setProjectName(e.target.value)}
               mb={5}
             />
+          </FormControl>
+          <FormControl>
             <FormLabel>Project Description</FormLabel>
             <Textarea
               value={projectDescription}
@@ -76,9 +81,11 @@ function ProjectModal({isOpen, onClose}: Props) {
           <Button colorScheme={"gray"} mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" colorScheme={"blue"}>
-            Create Project
-          </Button>
+          {!isDemo && (
+            <Button type="submit" colorScheme={"blue"}>
+              Create Project
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>
