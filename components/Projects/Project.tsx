@@ -1,83 +1,54 @@
-import { useMutation } from "@apollo/client";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Button,
   CardBody,
   CardFooter,
   Heading,
-  Text,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Card } from "@chakra-ui/react";
-import React, { useRef } from "react";
-import { DELETE_PROJECT, GET_PROJECTS } from "../../graphql/queries";
+import Link from "next/link";
+import React from "react";
+import AlertDialogDelete from "../AlertDialogDelete";
 
 interface Props {
-    id: string;
-    name: string;
-    description: string;
+  id: string;
+  name: string;
+  description: string | null | undefined;
 }
 
-
-function Project({ id, name, description }: Props) {
-  const [deleteProject ] = useMutation(DELETE_PROJECT, {
-      refetchQueries: [{ query: GET_PROJECTS }, "GetAllProjects"],
-    }
-  );
+function Project({ id, name }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef(null);
+  const { colorMode } = useColorMode();
 
   return (
     <>
-      <Card align="center" maxWidth="300px" w='300px' mr={10} mb={10} h='180px'>
-        <Heading size="md" mt={3}> { name } </Heading>
-        <CardBody>
-          <Text> { description } </Text>
-        </CardBody>
+      <Card
+        data-testid="project-component"
+        align="center"
+        maxWidth="300px"
+        w="300px"
+        mr={10}
+        mb={10}
+        h="180px"
+        bg={colorMode === "light" ? "white" : ""}
+      >
+        <Heading size="md" mt={3}>
+          {name}
+        </Heading>
+        <CardBody></CardBody>
         <CardFooter>
-          <Button colorScheme="blue" mr={5}>
-            Details
-          </Button>
+          <Link href={"projects/[projectId]"} as={`projects/${id}`}>
+            <Button colorScheme="blue" mr={5}>
+              Details
+            </Button>
+          </Link>
           <Button colorScheme="red" onClick={onOpen}>
             Delete
           </Button>
         </CardFooter>
       </Card>
-
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Project
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={() => {
-                deleteProject({variables: {id: id}});
-                onClose();
-              }} ml={3}>
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+      <AlertDialogDelete id={id} isOpen={isOpen} onClose={onClose} type='project' title='Delete Project' />
     </>
   );
 }
