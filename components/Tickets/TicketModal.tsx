@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Badge,
   Button,
   FormControl,
   FormLabel,
@@ -29,25 +30,26 @@ interface Props {
   title: string;
   buttonText: string;
   userId?: string;
-  update? : boolean
+  update?: boolean;
+  project?: {id: string; name: string}; 
 }
 
-function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, update}: Props) {
-  const { user } = useUser();
+function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, update, project}: Props) {
+  const { user, isDemo } = useUser();
   const toast = useToast();
   const [createTicket, {error}] = useMutation(CREATE_TICKET, {
     refetchQueries: [{ query: GET_TICKETS }, "GetAllTickets"],
   });
   const projects = useQuery(GET_PROJECTS, {variables: {id: user?.id!}});
   
-  const [projectID, setProjectID] = useState(ticket ? ticket.project_id : projects?.data?.user?.projects ? projects.data.user.projects[0].id : "");
+  const [projectID, setProjectID] = useState(ticket ? ticket.project_id : projects.data?.user?.projects?.length !== 0 ? projects?.data?.user?.projects![0].id! : "");
   const [userID, setUserID] = useState(userId || "");
   const [ticketName, setTicketName] = useState(ticket ? ticket.name : "");
   const [ticketDescription, setTicketDescription] = useState(ticket ? ticket.description : "");
   const [ticketType, setTicketType] = useState(ticket ? ticket.type : "");
   const [ticketStatus, setTicketStatus] = useState(ticket ? ticket.status : "");
   const [ticketPriority, setTicketPriority] = useState(ticket ? ticket.priority : "");
-  const users = useQuery(GET_PROJECT_USERS, { variables: { id: projectID } });
+  const users = useQuery(GET_PROJECT_USERS, { variables: { id: project ? project.id : projectID } });
 
   const [updateTicket, { error: updateTicketError }] = useMutation(
     UPDATE_TICKET,
@@ -61,37 +63,47 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, updat
         as="form"
         onSubmit={async (e) => {
           e.preventDefault();
-          update ? await updateTicket({variables: {input: {
-                id: ticket?.id!,
-                name: ticketName,
-                description: ticketDescription,
-                type: ticketType,
-                status: ticketStatus,
-                priority: ticketPriority,
-                user_id: userID || null,
-                project_id: projectID,
-              },}}) :  await createTicket({
-            variables: {
-              input: {
-                name: ticketName,
-                description: ticketDescription,
-                type: ticketType,
-                status: ticketStatus,
-                priority: ticketPriority,
-                user_id: userID || null,
-                project_id: projectID,
-              },
-            },
-          });
+          update
+            ? await updateTicket({
+                variables: {
+                  input: {
+                    id: ticket?.id!,
+                    name: ticketName,
+                    description: ticketDescription,
+                    type: ticketType,
+                    status: ticketStatus,
+                    priority: ticketPriority,
+                    user_id: userID || null,
+                    project_id: projectID,
+                  },
+                },
+              })
+            : await createTicket({
+                variables: {
+                  input: {
+                    name: ticketName,
+                    description: ticketDescription,
+                    type: ticketType,
+                    status: ticketStatus,
+                    priority: ticketPriority,
+                    user_id: userID || null,
+                    project_id: project ? project.id : projectID,
+                  },
+                },
+              });
           error || updateTicketError
             ? toast({
-                title: update ? "Error updating Ticket": "Error creating ticket",
+                title: update
+                  ? "Error updating Ticket"
+                  : "Error creating ticket",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
               })
             : toast({
-                title: update ? "Ticket updated" : "Ticket created successfully",
+                title: update
+                  ? "Ticket updated"
+                  : "Ticket created successfully",
                 status: "success",
                 duration: 5000,
                 isClosable: true,
@@ -107,17 +119,25 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, updat
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl isRequired>
+          <FormControl isRequired={project ? false : true}>
             <FormLabel>Project Name</FormLabel>
-            <Select
-              value={projectID}
-              onChange={(e) => setProjectID(e.target.value)}
-              mb={3}
-            >
-              {projects.data?.user?.projects?.map((project) => (
-                <option value={project.id}>{project.name}</option>
-              ))}
-            </Select>
+            {project ? (
+              <Badge p={1} mb={3} fontWeight="semibold">
+                {project.name}
+              </Badge>
+            ) : (
+              <Select
+                value={projectID}
+                onChange={(e) => setProjectID(e.target.value)}
+                mb={3}
+              >
+                {projects.data?.user?.projects?.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </Select>
+            )}
           </FormControl>
           <FormControl isRequired>
             <FormLabel>Ticket Name</FormLabel>
@@ -187,7 +207,9 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, updat
             >
               <option value="">Unassigned</option>
               {users.data?.project.users?.map((user) => (
-                <option value={user.id}>{user.username}</option>
+                <option key={user.id} value={user.id}>
+                  {user.username}
+                </option>
               ))}
             </Select>
           </FormControl>
@@ -196,9 +218,11 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, updat
           <Button colorScheme={"gray"} mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" colorScheme={"orange"}>
-            {buttonText}
-          </Button>
+          {!isDemo && (
+            <Button type="submit" colorScheme={"orange"}>
+              {buttonText}
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>
