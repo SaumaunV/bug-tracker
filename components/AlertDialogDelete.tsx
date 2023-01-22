@@ -13,7 +13,7 @@ interface Props {
 }
 
 function AlertDialogDelete({ id, isOpen, onClose, type, title }: Props) {
-    const { user } = useUser();
+    const { user, isDemo } = useUser();
     const toast = useToast();
     const [deleteProject, { error: errorProject }] = useMutation(DELETE_PROJECT, {
       refetchQueries: [{ query: GET_PROJECTS, variables: {id: user?.id} }, "GetAllProjects"],
@@ -69,7 +69,7 @@ function AlertDialogDelete({ id, isOpen, onClose, type, title }: Props) {
             </Button>
             <Button
               colorScheme="red"
-              onClick={handleDelete}
+              onClick={isDemo ? onClose : handleDelete}
               ml={3}
             >
               Delete
