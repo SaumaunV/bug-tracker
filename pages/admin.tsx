@@ -28,7 +28,7 @@ function Admin() {
           </Thead>
           <Tbody>
             {users?.map((user) => (
-              <User user={user} />
+              <User key={user.id} user={user} />
             ))}
           </Tbody>
         </Table>

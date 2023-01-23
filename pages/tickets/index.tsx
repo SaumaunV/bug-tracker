@@ -8,7 +8,6 @@ import { useUser } from "../../UserProvider";
 function Tickets() {
   const {user} = useUser();
   const [getUserTickets, {data, loading, error}] = useLazyQuery(GET_USER_TICKETS);
-  console.log(user);
 
   useEffect(() => {
     if(user) {
