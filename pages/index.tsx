@@ -47,7 +47,6 @@ export default function Home() {
       setUser(respData);
     }
     else setInvalidLogin(true);
-    console.log(respData);
   };
 
   const handleLoginDemo = async (username: string, password: string) => {
@@ -68,7 +67,6 @@ export default function Home() {
       setUser(respData);
       setIsDemo(true);
     } else setInvalidLogin(true);  
-    console.log(respData);
   }
 
   if (userLoading) return (
@@ -86,6 +84,7 @@ export default function Home() {
         direction="column"
         alignItems={"center"}
         p="10"
+        color='white'
       >
         <Heading mb={10}>Login</Heading>
         {invalidLogin && (

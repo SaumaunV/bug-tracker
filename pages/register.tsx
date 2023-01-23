@@ -48,7 +48,6 @@ function Register() {
       setLoading(true);
       setUser(respData);
     } else setInvalidRegister(true);
-    console.log(respData);
   };
 
   if (userLoading)
@@ -67,6 +66,7 @@ function Register() {
         direction="column"
         alignItems={"center"}
         p="10"
+        color='white'
       >
         <Heading mb={10}>Sign up</Heading>
         {invalidRegister && (
