@@ -36,7 +36,7 @@ export default function UserProvider({ children }: Props) {
     useEffect(() => {
         const getUser = async () =>{ 
             try {
-                const resp = await fetch("http://localhost:4000/user", {
+                const resp = await fetch("https://bugtracker-backend.onrender.com/user", {
                   credentials: "include"
                 });
                 const respData: User = await resp.json();
