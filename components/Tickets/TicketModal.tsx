@@ -19,7 +19,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_TICKET, GET_PROJECTS, GET_PROJECT_USERS, GET_TICKETS, UPDATE_TICKET } from '../../graphql/queries';
+import { CREATE_TICKET, GET_PROJECT, GET_PROJECTS, GET_PROJECT_USERS, GET_USER_TICKETS, UPDATE_TICKET } from '../../graphql/queries';
 import { Ticket } from '../../src/__generated__/graphql';
 import { useUser } from '../../UserProvider';
 
@@ -37,8 +37,11 @@ interface Props {
 function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, update, project}: Props) {
   const { user, isDemo } = useUser();
   const toast = useToast();
-  const [createTicket, {error}] = useMutation(CREATE_TICKET, {
-    refetchQueries: [{ query: GET_TICKETS }, "GetAllTickets"],
+  const [createTicket, { error }] = useMutation(CREATE_TICKET, {
+    refetchQueries: [
+      { query: GET_PROJECT, variables: { id: project?.id } },
+      { query: GET_USER_TICKETS, variables: { id: user?.id } },
+    ],
   });
   const projects = useQuery(GET_PROJECTS, {variables: {id: user?.id!}});
   
@@ -53,7 +56,12 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, updat
 
   const [updateTicket, { error: updateTicketError }] = useMutation(
     UPDATE_TICKET,
-    { refetchQueries: [{ query: GET_TICKETS }, "GetAllTickets"] }
+    {
+      refetchQueries: [
+        { query: GET_PROJECT, variables: { id: project?.id } },
+        { query: GET_USER_TICKETS, variables: { id: user?.id } },
+      ],
+    }
   );
 
   return (
