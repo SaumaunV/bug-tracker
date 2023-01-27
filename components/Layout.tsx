@@ -1,6 +1,6 @@
-import { Flex, useColorMode } from '@chakra-ui/react';
+import { Center, Flex, Spinner, useColorMode } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useUser } from '../UserProvider';
 import Header from './Header';
 import NavMenu from './NavMenu';
@@ -14,12 +14,16 @@ function Layout({children}: Props) {
   const { colorMode } = useColorMode();
   const router = useRouter();
 
-  useEffect(() => {
-    if (loading) return;
-    else if (!user) router.push("/");
-  }, [user]);
-
-  return (
+  if (loading) return (
+    <Center height='100vh'>
+      <Spinner />
+    </Center>
+  );
+  else if (!user) {
+    router.push("/");
+    return null;
+  }
+  else return (
     <Flex h="100vh">
       <NavMenu />
       <Flex direction="column" flex={1} overflow="hidden">
