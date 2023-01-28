@@ -70,6 +70,7 @@ function Ticket({ ticket }: Props) {
         onClose={onCloseEditTicket}
         title='Edit Ticket'
         buttonText='Save'
+        update
       />
       <TicketInfoModal ticket={ticket} isOpen={isOpenViewTicket} onClose={onCloseViewTicket}/>
     </>
