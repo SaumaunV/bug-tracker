@@ -18,7 +18,7 @@ import { NextPage } from "next";
 import Link from "next/link";
 
 const link = "https://bugtracker-backend.onrender.com/login";
-//http://localhost:4000/login
+//const link = 'http://localhost:4000/login'
 
 export default function Home() {
   const { user, loading: userLoading, setUser, setIsDemo } = useUser();
@@ -66,7 +66,7 @@ export default function Home() {
       setLoading(true);
       setUser(respData);
       setIsDemo(true);
-    } else setInvalidLogin(true);  
+    }  
   }
 
   if (userLoading) return (
@@ -124,7 +124,6 @@ export default function Home() {
         <Button
           isLoading={loading}
           w={"100%"}
-          type="submit"
           bgColor="orange.500"
           _hover={{ bgColor: "orange.600" }}
           onClick={() => handleLoginDemo("DemoAdmin", "demoadmin!")}
@@ -135,7 +134,6 @@ export default function Home() {
           isLoading={loading}
           w={"100%"}
           my={3}
-          type="submit"
           bgColor="green.500"
           _hover={{ bgColor: "green.600" }}
           onClick={() => handleLoginDemo("DemoDeveloper", "demodeveloper!")}
