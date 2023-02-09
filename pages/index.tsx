@@ -11,6 +11,7 @@ import {
   AlertTitle,
   Spinner,
   Center,
+  Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
@@ -76,7 +77,13 @@ export default function Home() {
   );
   else if (user) router.push("/dashboard");
   else return (
-    <Flex h="100vh" bgColor="gray.800" alignItems="center" justify="center">
+    <Flex
+      h="100vh"
+      bgColor="gray.800"
+      alignItems="center"
+      justify="center"
+      direction={"column"}
+    >
       <Flex
         as="form"
         onSubmit={handleSubmit}
@@ -84,7 +91,8 @@ export default function Home() {
         direction="column"
         alignItems={"center"}
         p="10"
-        color='white'
+        color="white"
+        maxWidth="300px"
       >
         <Heading mb={10}>Login</Heading>
         {invalidLogin && (
@@ -143,6 +151,9 @@ export default function Home() {
         <Link href="/register" style={{ textDecoration: "underline" }}>
           Register
         </Link>
+        <Flex mt={5} textAlign='center'>
+          <Text>*Note: Demo accounts cannot make changes to data</Text>
+        </Flex>
       </Flex>
     </Flex>
   );
