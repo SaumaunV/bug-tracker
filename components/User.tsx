@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { GET_USERS, UPDATE_USER } from "../graphql/queries";
+import { useUser } from "../UserProvider";
 import AlertDialogDelete from "./AlertDialogDelete";
 
 interface Props {
@@ -24,6 +25,7 @@ interface Props {
 }
 
 function User({ user }: Props) {
+  const { isDemo } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const toast = useToast();
@@ -86,7 +88,7 @@ function User({ user }: Props) {
                 icon={<CheckIcon />}
                 colorScheme={colorMode === "dark" ? "facebook" : "gray"}
                 onClick={() => {
-                  if (user?.role === role) {
+                  if (user?.role === role || isDemo) {
                     setEditing(false);
                   } else {
                     handleUserUpdate();
