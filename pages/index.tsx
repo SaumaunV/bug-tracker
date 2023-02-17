@@ -12,11 +12,13 @@ import {
   Spinner,
   Center,
   Text,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import { NextPage } from "next";
 import Link from "next/link";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 const link = "https://bugtracker-backend.onrender.com/login";
 //const link = 'http://localhost:4000/login'
@@ -28,6 +30,9 @@ export default function Home() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
+
+  const { colorMode, toggleColorMode } = useColorMode();
+  const light = colorMode === 'light';
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -79,7 +84,7 @@ export default function Home() {
   else return (
     <Flex
       h="100vh"
-      bgColor="gray.800"
+      bgColor={light ? "lightgray" : ""}
       alignItems="center"
       justify="center"
       direction={"column"}
@@ -87,13 +92,25 @@ export default function Home() {
       <Flex
         as="form"
         onSubmit={handleSubmit}
-        bgColor="gray.700"
+        bgColor={light ? "white" : "gray.700"}
         direction="column"
         alignItems={"center"}
         p="10"
-        color="white"
+        //color="white"
         maxWidth="300px"
+        position={"absolute"}
       >
+        <Button
+          position={"absolute"}
+          top="0"
+          right={0}
+          p={2}
+          bg={light ? "white" : ""}
+          _hover={light ? { bg: "gray.300" } : { bg: "whiteAlpha.200" }}
+          onClick={() => toggleColorMode()}
+        >
+          {light ? <MoonIcon boxSize={5} /> : <SunIcon boxSize={5} />}
+        </Button>
         <Heading mb={10}>Login</Heading>
         {invalidLogin && (
           <Alert status="error" variant="subtle" mb={5}>
@@ -124,7 +141,7 @@ export default function Home() {
           w={"100%"}
           my={7}
           type="submit"
-          bgColor="blue.500"
+          bgColor={light ? "blue.400" : "blue.500"}
           _hover={{ bgColor: "blue.600" }}
         >
           Sign In
@@ -132,7 +149,7 @@ export default function Home() {
         <Button
           isLoading={loading}
           w={"100%"}
-          bgColor="orange.500"
+          bgColor={light ? "orange.300" : "orange.500"}
           _hover={{ bgColor: "orange.600" }}
           onClick={() => handleLoginDemo("DemoAdmin", "demoadmin!")}
         >
@@ -142,7 +159,7 @@ export default function Home() {
           isLoading={loading}
           w={"100%"}
           my={3}
-          bgColor="green.500"
+          bgColor={light ? "green.300" : "green.500"}
           _hover={{ bgColor: "green.600" }}
           onClick={() => handleLoginDemo("DemoDeveloper", "demodeveloper!")}
         >
@@ -151,7 +168,7 @@ export default function Home() {
         <Link href="/register" style={{ textDecoration: "underline" }}>
           Register
         </Link>
-        <Flex mt={5} textAlign='center'>
+        <Flex mt={5} textAlign="center">
           <Text>*Note: Demo accounts cannot make changes to data</Text>
         </Flex>
       </Flex>
