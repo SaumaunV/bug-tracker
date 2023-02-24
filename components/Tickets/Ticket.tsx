@@ -11,6 +11,16 @@ interface Props {
   ticket: Ticket;
 }
 
+interface colorType {
+  [key: string]: string;
+}
+const BadgeColors: colorType = {
+  immediate: "blue",
+  high: "red",
+  medium: "orange",
+  low: "green"
+}
+
 function Ticket({ ticket }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenEditTicket, onOpen: onOpenEditTicket, onClose: onCloseEditTicket } = useDisclosure({id: "ticket-modal"});
@@ -35,7 +45,7 @@ function Ticket({ ticket }: Props) {
           </Badge>
         </Td>
         <Td>
-          <Badge variant="outline" colorScheme="green" px={2}>
+          <Badge variant="outline" colorScheme={BadgeColors[ticket.priority]} px={2}>
             {ticket.priority}
           </Badge>
         </Td>
