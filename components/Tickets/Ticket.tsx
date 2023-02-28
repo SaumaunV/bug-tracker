@@ -16,9 +16,14 @@ interface colorType {
 }
 const BadgeColors: colorType = {
   immediate: "blue",
+  resolved: "blue",
   high: "red",
   medium: "orange",
-  low: "green"
+  testing: "orange",
+  low: "green",
+  new: "'green",
+  development: "yellow",
+  unassigned: "grey"
 }
 
 function Ticket({ ticket }: Props) {
@@ -40,12 +45,20 @@ function Ticket({ ticket }: Props) {
         <Td>{project.data?.project.name}</Td>
         <Td>{user.data?.user?.username || "Unassigned"}</Td>
         <Td>
-          <Badge variant="outline" colorScheme="green" px={2}>
+          <Badge
+            variant="outline"
+            colorScheme={BadgeColors[ticket.status]}
+            px={2}
+          >
             {ticket.status}
           </Badge>
         </Td>
         <Td>
-          <Badge variant="outline" colorScheme={BadgeColors[ticket.priority]} px={2}>
+          <Badge
+            variant="outline"
+            colorScheme={BadgeColors[ticket.priority]}
+            px={2}
+          >
             {ticket.priority}
           </Badge>
         </Td>
@@ -54,13 +67,13 @@ function Ticket({ ticket }: Props) {
           <IconButton
             aria-label="View Ticket"
             icon={<ViewIcon />}
-            colorScheme={colorMode === 'dark' ? "facebook" : "gray"}
+            colorScheme={colorMode === "dark" ? "facebook" : "gray"}
             onClick={onOpenViewTicket}
           />
           <IconButton
             aria-label="Edit Ticket"
             icon={<EditIcon />}
-            colorScheme={colorMode === 'dark' ? "facebook" : "gray"}
+            colorScheme={colorMode === "dark" ? "facebook" : "gray"}
             onClick={onOpenEditTicket}
             ml={2}
           />
@@ -73,16 +86,26 @@ function Ticket({ ticket }: Props) {
           />
         </Td>
       </Tr>
-      <AlertDialogDelete id={ticket.id} isOpen={isOpen} onClose={onClose} type='ticket' title='Delete Ticket' />
+      <AlertDialogDelete
+        id={ticket.id}
+        isOpen={isOpen}
+        onClose={onClose}
+        type="ticket"
+        title="Delete Ticket"
+      />
       <TicketModal
         ticket={ticket}
         isOpen={isOpenEditTicket}
         onClose={onCloseEditTicket}
-        title='Edit Ticket'
-        buttonText='Save'
+        title="Edit Ticket"
+        buttonText="Save"
         update
       />
-      <TicketInfoModal ticket={ticket} isOpen={isOpenViewTicket} onClose={onCloseViewTicket}/>
+      <TicketInfoModal
+        ticket={ticket}
+        isOpen={isOpenViewTicket}
+        onClose={onCloseViewTicket}
+      />
     </>
   );
 }
