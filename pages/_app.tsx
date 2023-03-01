@@ -32,6 +32,9 @@ export default function App({ Component, pageProps }: Props) {
       <ApolloProvider client={client}>
         <UserProvider>
           <ChakraProvider>
+            <Head>
+              <title>Bug Tracker</title>
+            </Head>
             <main className={inter.className}>
               <Component {...pageProps} />
             </main>
@@ -47,7 +50,6 @@ export default function App({ Component, pageProps }: Props) {
         <ChakraProvider>
           <Head>
             <title>Bug Tracker</title>
-            <link rel="icon" href="/favicon.ico" />
           </Head>
           <main className={inter.className}>
             <Layout>
