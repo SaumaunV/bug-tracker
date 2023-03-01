@@ -7,8 +7,10 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { NextPage } from "next";
 import { ReactNode } from 'react';
 import Layout from "../components/Layout";
+import { Inter } from '@next/font/google'
 
 const client = new ApolloClient({
+  //uri: "http://localhost:4000/graphql",
   uri: "https://bugtracker-backend.onrender.com/graphql",
   cache: new InMemoryCache(),  
 });
@@ -21,6 +23,8 @@ type Props = AppProps & {
   Component: Page;
 };
 
+const inter = Inter({ subsets: ["latin"] });
+
 export default function App({ Component, pageProps }: Props) {
 
   if(Component.getLayout) {
@@ -28,7 +32,9 @@ export default function App({ Component, pageProps }: Props) {
       <ApolloProvider client={client}>
         <UserProvider>
           <ChakraProvider>
-            <Component {...pageProps} />
+            <main className={inter.className}>
+              <Component {...pageProps} />
+            </main>
           </ChakraProvider>
         </UserProvider>
       </ApolloProvider>
@@ -43,9 +49,11 @@ export default function App({ Component, pageProps }: Props) {
             <title>Bug Tracker</title>
             <link rel="icon" href="/favicon.ico" />
           </Head>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <main className={inter.className}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </main>
         </ChakraProvider>
       </UserProvider>
     </ApolloProvider>
