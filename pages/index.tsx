@@ -13,12 +13,15 @@ import {
   Center,
   Text,
   useColorMode,
+  Box,
+  Icon,
+  AlertDescription,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import { NextPage } from "next";
 import Link from "next/link";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { AiOutlineUser } from "react-icons/ai"
 
 const link = "https://bugtracker-backend.onrender.com/login";
 //const link = 'http://localhost:4000/login'
@@ -30,9 +33,6 @@ export default function Home() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
-
-  const { colorMode, toggleColorMode } = useColorMode();
-  const light = colorMode === 'light';
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -75,7 +75,7 @@ export default function Home() {
     }  
   }
 
-  if (userLoading) return (
+  if (userLoading || loading) return (
     <Center height='100vh'>
       <Spinner />
     </Center>
@@ -84,7 +84,7 @@ export default function Home() {
   else return (
     <Flex
       h="100vh"
-      bgColor={light ? "lightgray" : ""}
+      bgColor="lightgray" 
       alignItems="center"
       justify="center"
       direction={"column"}
@@ -92,32 +92,74 @@ export default function Home() {
       <Flex
         as="form"
         onSubmit={handleSubmit}
-        bgColor={light ? "white" : "gray.700"}
+        bgColor="white"
         direction="column"
         alignItems={"center"}
         p="10"
-        //color="white"
-        maxWidth="300px"
-        position={"absolute"}
+        maxWidth="500px"
       >
-        <Button
-          position={"absolute"}
-          top="0"
-          right={0}
-          p={2}
-          bg={light ? "white" : ""}
-          _hover={light ? { bg: "gray.300" } : { bg: "whiteAlpha.200" }}
-          onClick={() => toggleColorMode()}
-        >
-          {light ? <MoonIcon boxSize={5} /> : <SunIcon boxSize={5} />}
-        </Button>
-        <Heading mb={10}>Login</Heading>
+        <Heading as="h1" mb={10} fontFamily="inherit">
+          Sign In
+        </Heading>
+        <Heading as="h2" size="lg" fontFamily="inherit">
+          Demo Accounts
+        </Heading>
+        <Flex gap="12" mt={5}>
+          <Button
+            p={10}
+            backgroundColor="white"
+            border="1px"
+            borderColor="gray.100"
+            shadow={"base"}
+            _hover={{
+              backgroundColor: "white",
+              boxShadow: "0 0 5px 3px darkorange",
+            }}
+            onClick={() => handleLoginDemo("DemoAdmin", "demoadmin!")}
+          >
+            <Flex direction="column" alignItems="center" justify={"center"}>
+              <Icon as={AiOutlineUser} boxSize={8} color="orange.500" />
+              <Text>Admin</Text>
+            </Flex>
+          </Button>
+          <Button
+            p={10}
+            backgroundColor="white"
+            border="1px"
+            borderColor="gray.100"
+            shadow={"base"}
+            _hover={{
+              backgroundColor: "white",
+              boxShadow: "0 0 5px 3px green",
+            }}
+            onClick={() => handleLoginDemo("DemoDeveloper", "demodeveloper!")}
+          >
+            <Flex
+              direction="column"
+              alignItems="center"
+              justify={"center"}
+              w="50px"
+            >
+              <Icon as={AiOutlineUser} boxSize={8} color="green.500" />
+              <Text>Developer</Text>
+            </Flex>
+          </Button>
+        </Flex>
+
         {invalidLogin && (
           <Alert status="error" variant="subtle" mb={5}>
             <AlertIcon />
             <AlertTitle>Invalid user info</AlertTitle>
           </Alert>
         )}
+        <Flex width="100%" flex={1} my={10} alignItems="center">
+          <Box height="1px" backgroundColor={"lightgray"} flex="1"></Box>
+          <Text mx={5} color="gray">
+            OR
+          </Text>
+          <Box height="1px" backgroundColor={"lightgray"} flex="1"></Box>
+        </Flex>
+
         <FormControl>
           <FormLabel htmlFor="username">Username</FormLabel>
           <Input
@@ -141,36 +183,27 @@ export default function Home() {
           w={"100%"}
           my={7}
           type="submit"
-          bgColor={light ? "blue.400" : "blue.500"}
-          _hover={{ bgColor: "blue.600" }}
+          color="white"
+          bgColor={"blue.400"}
+          _hover={{ bgColor: "blue.500" }}
         >
           Sign In
         </Button>
-        <Button
-          isLoading={loading}
-          w={"100%"}
-          bgColor={light ? "orange.300" : "orange.500"}
-          _hover={{ bgColor: "orange.600" }}
-          onClick={() => handleLoginDemo("DemoAdmin", "demoadmin!")}
-        >
-          Sign In as Demo Admin
-        </Button>
-        <Button
-          isLoading={loading}
-          w={"100%"}
-          my={3}
-          bgColor={light ? "green.300" : "green.500"}
-          _hover={{ bgColor: "green.600" }}
-          onClick={() => handleLoginDemo("DemoDeveloper", "demodeveloper!")}
-        >
-          Sign In as Demo User
-        </Button>
-        <Link href="/register" style={{ textDecoration: "underline" }}>
-          Register
-        </Link>
-        <Flex mt={5} textAlign="center">
-          <Text>*Note: Demo accounts cannot make changes to data</Text>
+        <Flex>
+          <Text mr={3}>Don't have an account?</Text>
+          <Link
+            href="/register"
+            style={{ textDecoration: "underline", color: "royalblue" }}
+          >
+            Register
+          </Link>
         </Flex>
+        <Alert status="info" mt={10} borderRadius="base">
+          <AlertIcon />
+          <AlertDescription maxWidth="300px" fontSize={"smaller"}>
+            Demo accounts cannot make changes to data
+          </AlertDescription>
+        </Alert>
       </Flex>
     </Flex>
   );
