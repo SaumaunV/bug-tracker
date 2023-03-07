@@ -1,27 +1,14 @@
 import { useUser } from "../UserProvider";
 import {
-  Button,
   Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Alert,
-  AlertIcon,
-  AlertTitle,
   Spinner,
   Center,
-  Text,
-  useColorMode,
-  Box,
-  Icon,
-  AlertDescription,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { NextPage } from "next";
-import Link from "next/link";
-import { AiOutlineUser } from "react-icons/ai"
+import RegisterForm from "../components/Forms/RegisterForm";
+import LoginForm from "../components/Forms/LoginForm";
 
 const link = "https://bugtracker-backend.onrender.com/login";
 //const link = 'http://localhost:4000/login'
@@ -29,182 +16,37 @@ const link = "https://bugtracker-backend.onrender.com/login";
 export default function Home() {
   const { user, loading: userLoading, setUser, setIsDemo } = useUser();
   const router = useRouter();
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false);
-  const [invalidLogin, setInvalidLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const resp = await fetch(link, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-      credentials: "include",
-    });
-    const respData = await resp.json();
-    if(respData) {
-      setLoading(true);
-      setUser(respData);
-    }
-    else setInvalidLogin(true);
-  };
-
-  const handleLoginDemo = async (username: string, password: string) => {
-    const resp = await fetch(link, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-      credentials: "include",
-    });
-    const respData = await resp.json();
-    if (respData) {
-      setLoading(true);
-      setUser(respData);
-      setIsDemo(true);
-    }  
-  }
-
-  if (userLoading || loading) return (
+  if (user) router.push("/dashboard");
+  else if (userLoading || loading) return (
     <Center height='100vh'>
       <Spinner />
     </Center>
-  );
-  else if (user) router.push("/dashboard");
+  ); 
   else return (
     <Flex
       h="100vh"
-      bgColor="lightgray" 
+      bgColor="lightgray"
       alignItems="center"
       justify="center"
       direction={"column"}
     >
-      <Flex
-        as="form"
-        onSubmit={handleSubmit}
-        bgColor="white"
-        direction="column"
-        alignItems={"center"}
-        p="10"
-        maxWidth="500px"
-      >
-        <Heading as="h1" mb={10} fontFamily="inherit">
-          Sign In
-        </Heading>
-        <Heading as="h2" size="lg" fontFamily="inherit">
-          Demo Accounts
-        </Heading>
-        <Flex gap="12" mt={5}>
-          <Button
-            p={10}
-            backgroundColor="white"
-            border="1px"
-            borderColor="gray.100"
-            shadow={"base"}
-            _hover={{
-              backgroundColor: "white",
-              boxShadow: "0 0 5px 3px darkorange",
-            }}
-            onClick={() => handleLoginDemo("DemoAdmin", "demoadmin!")}
-          >
-            <Flex direction="column" alignItems="center" justify={"center"}>
-              <Icon as={AiOutlineUser} boxSize={8} color="orange.500" />
-              <Text>Admin</Text>
-            </Flex>
-          </Button>
-          <Button
-            p={10}
-            backgroundColor="white"
-            border="1px"
-            borderColor="gray.100"
-            shadow={"base"}
-            _hover={{
-              backgroundColor: "white",
-              boxShadow: "0 0 5px 3px green",
-            }}
-            onClick={() => handleLoginDemo("DemoDeveloper", "demodeveloper!")}
-          >
-            <Flex
-              direction="column"
-              alignItems="center"
-              justify={"center"}
-              w="50px"
-            >
-              <Icon as={AiOutlineUser} boxSize={8} color="green.500" />
-              <Text>Developer</Text>
-            </Flex>
-          </Button>
-        </Flex>
-
-        {invalidLogin && (
-          <Alert status="error" variant="subtle" mb={5}>
-            <AlertIcon />
-            <AlertTitle>Invalid user info</AlertTitle>
-          </Alert>
-        )}
-        <Flex width="100%" flex={1} my={10} alignItems="center">
-          <Box height="1px" backgroundColor={"lightgray"} flex="1"></Box>
-          <Text mx={5} color="gray">
-            OR
-          </Text>
-          <Box height="1px" backgroundColor={"lightgray"} flex="1"></Box>
-        </Flex>
-
-        <FormControl>
-          <FormLabel htmlFor="username">Username</FormLabel>
-          <Input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </FormControl>
-        <FormControl mt={4}>
-          <FormLabel htmlFor="password">Password</FormLabel>
-          <Input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </FormControl>
-        <Button
-          isLoading={loading}
-          w={"100%"}
-          my={7}
-          type="submit"
-          color="white"
-          bgColor={"blue.400"}
-          _hover={{ bgColor: "blue.500" }}
-        >
-          Sign In
-        </Button>
-        <Flex>
-          <Text mr={3}>Don't have an account?</Text>
-          <Link
-            href="/register"
-            style={{ textDecoration: "underline", color: "royalblue" }}
-          >
-            Register
-          </Link>
-        </Flex>
-        <Alert status="info" mt={10} borderRadius="base">
-          <AlertIcon />
-          <AlertDescription maxWidth="300px" fontSize={"smaller"}>
-            Demo accounts cannot make changes to data
-          </AlertDescription>
-        </Alert>
-      </Flex>
+      {showRegister ? (
+        <RegisterForm
+          setShowRegister={setShowRegister}
+          setUser={setUser}
+          setLoading={setLoading}
+        />
+      ) : (
+        <LoginForm
+          setShowRegister={setShowRegister}
+          setUser={setUser}
+          setLoading={setLoading}
+          setIsDemo={setIsDemo}
+        />
+      )}
     </Flex>
   );
 }
