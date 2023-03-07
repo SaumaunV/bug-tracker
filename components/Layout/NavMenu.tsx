@@ -1,27 +1,19 @@
 import React from "react";
-import {
-  Box,
-  Flex,
-  Icon,
-  useColorMode,
-} from "@chakra-ui/react";
-import {
-  AiFillBug,
-  AiOutlineDashboard,
-  AiOutlineFolder,
-} from "react-icons/ai";
-import { TbNotes } from 'react-icons/tb';
-import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+import { Box, Flex, Icon, useColorMode } from "@chakra-ui/react";
+import { AiFillBug, AiOutlineDashboard, AiOutlineFolder } from "react-icons/ai";
+import { TbNotes } from "react-icons/tb";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useUser } from "../UserProvider";
+import { useUser } from "../../UserProvider";
 
 function NavMenu() {
   const { user } = useUser();
-  const {colorMode} = useColorMode();
+  const { colorMode } = useColorMode();
   const router = useRouter();
-  const bgHover = colorMode === "light" ? "blackAlpha.200" :  "whiteAlpha.200";
-  const borderColor = colorMode === "light" ? "blackAlpha.500" : "whiteAlpha.500";
+  const bgHover = colorMode === "light" ? "blackAlpha.200" : "whiteAlpha.200";
+  const borderColor =
+    colorMode === "light" ? "blackAlpha.500" : "whiteAlpha.500";
 
   return (
     <Box

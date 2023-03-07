@@ -14,9 +14,9 @@ import {
 import { useRouter } from "next/router";
 import React from "react";
 import { CgProfile } from "react-icons/cg";
-import { useUser } from "../UserProvider";
-import ProjectModal from "./Projects/ProjectModal";
-import TicketModal from "./Tickets/TicketModal";
+import { useUser } from "../../UserProvider";
+import ProjectModal from "../Projects/ProjectModal";
+import TicketModal from "../Tickets/TicketModal";
 
 function Header() {
   const {user, setUser} = useUser();
