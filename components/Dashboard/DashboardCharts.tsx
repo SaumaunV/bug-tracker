@@ -14,7 +14,7 @@ import {
 import { Bar} from "react-chartjs-2";
 import { GET_USERS, GET_USER_ALL_TICKETS } from "../../graphql/queries";
 import { useUser } from "../../UserProvider";
-import DoughnutChart from "../DoughnutChart";
+import DoughnutChart from "./DoughnutChart";
 
 ChartJS.register(
   CategoryScale,
