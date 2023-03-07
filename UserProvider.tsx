@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type User = {
+export type User = {
     id: string;
     username: string;
     email: string;
@@ -36,9 +36,12 @@ export default function UserProvider({ children }: Props) {
     useEffect(() => {
         const getUser = async () =>{ 
             try {
-                const resp = await fetch("https://bugtracker-backend.onrender.com/user", {
-                  credentials: "include"
-                });
+                const resp = await fetch(
+                  "https://bugtracker-backend.onrender.com/user",
+                  {
+                    credentials: "include",
+                  }
+                );
                 const respData: User = await resp.json();
                 setUser(respData);
             } catch (error) {
