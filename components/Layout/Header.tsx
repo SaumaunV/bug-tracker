@@ -61,9 +61,6 @@ function Header() {
     <Flex
       alignItems="center"
       h={14}
-      borderBottom={colorMode === "light" ? "1px" : "1px"}
-      borderBottomColor={colorMode === "light" ? "lightgray" : "black"}
-      shadow={colorMode === "light" ? "" : "base"}
     >
       <Box flex={1} ml={10} fontSize="2xl" fontWeight="bold">
         {path.includes("projects/")
