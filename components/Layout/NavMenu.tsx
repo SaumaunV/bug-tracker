@@ -1,90 +1,85 @@
-import React from "react";
-import { Box, Flex, Icon, useColorMode } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import { Box, Divider, Flex, Icon, useColorMode } from "@chakra-ui/react";
 import { AiFillBug, AiOutlineDashboard, AiOutlineFolder } from "react-icons/ai";
 import { TbNotes } from "react-icons/tb";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { useUser } from "../../UserProvider";
+import NavMenuItem from "./NavMenuItem";
 
 function NavMenu() {
   const { user } = useUser();
   const { colorMode } = useColorMode();
   const router = useRouter();
-  const bgHover = colorMode === "light" ? "blackAlpha.200" : "whiteAlpha.200";
   const borderColor =
     colorMode === "light" ? "blackAlpha.500" : "whiteAlpha.500";
+
+  const [selectedId, setSelectedId] = useState("");
+
+  useEffect(() => {
+    router.pathname === '/dashboard' ? setSelectedId("1") : 
+    router.pathname.includes('project') ? setSelectedId("2") : 
+    router.pathname === '/tickets' ? setSelectedId("3") : 
+    setSelectedId("4"); 
+  }, []);
 
   return (
     <Box
       h="100vh"
       w="15%"
-      shadow="base"
-      borderRight={colorMode === "light" ? "" : "1px"}
-      borderColor="black"
+      borderRight={colorMode === "light" ? "1px" : "1px"}
+      borderColor={colorMode === "light" ? "lightgray" : "black"}
     >
       <Flex
         alignItems="center"
         justify="center"
         p={4}
-        borderBottom="1px solid"
         borderColor={borderColor}
       >
         <Icon as={AiFillBug} boxSize={8} color="blue.500" />
-        <Box ml={3}>
+        <Box ml={3} fontWeight="bold" textColor="blue.600">
           <Box>Bug</Box>
           <Box>Tracker</Box>
         </Box>
       </Flex>
 
-      <Flex
-        w="100%"
-        p={3}
-        cursor="pointer"
-        _hover={{ bg: bgHover }}
-        transitionDuration="200ms"
-        onClick={() => router.push("/dashboard")}
-      >
-        <Icon as={AiOutlineDashboard} boxSize={5} ml={2} />
-        <Box ml={3}>Dashboard</Box>
+      <Flex>
+        <Divider mx={5} mb={3} />
       </Flex>
 
-      <Flex
-        w="100%"
-        p={3}
-        cursor="pointer"
-        _hover={{ bg: bgHover }}
-        transitionDuration="200ms"
-        onClick={() => router.push("/projects")}
-      >
-        <Icon as={AiOutlineFolder} boxSize={5} ml={2} />
-        <Box ml={3}>My Projects</Box>
-      </Flex>
-
-      <Flex
-        w="100%"
-        p={3}
-        cursor="pointer"
-        _hover={{ bg: bgHover }}
-        transitionDuration="200ms"
-        onClick={() => router.push("/tickets")}
-      >
-        <Icon as={TbNotes} boxSize={5} ml={2} />
-        <Box ml={3}>My Tickets</Box>
-      </Flex>
+      <NavMenuItem
+        id="1"
+        title="Dashboard"
+        route="/dashboard"
+        icon={AiOutlineDashboard}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
+      <NavMenuItem
+        id="2"
+        title="My Projects"
+        route="/projects"
+        icon={AiOutlineFolder}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
+      <NavMenuItem
+        id="3"
+        title="My Tickets"
+        route="/tickets"
+        icon={TbNotes}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
       {user?.role === "admin" && (
-        <Link href={"/admin"}>
-          <Flex
-            w="100%"
-            p={3}
-            cursor="pointer"
-            _hover={{ bg: bgHover }}
-            transitionDuration="200ms"
-          >
-            <Icon as={MdOutlineAdminPanelSettings} boxSize={5} ml={2} />
-            <Box ml={3}>Admin</Box>
-          </Flex>
-        </Link>
+        <NavMenuItem
+          id="4"
+          title="Admin"
+          route="/admin"
+          icon={MdOutlineAdminPanelSettings}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
       )}
     </Box>
   );
