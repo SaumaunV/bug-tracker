@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Box, Divider, Flex, Icon, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Icon, useColorMode } from "@chakra-ui/react";
 import { AiFillBug, AiOutlineDashboard, AiOutlineFolder } from "react-icons/ai";
 import { TbNotes } from "react-icons/tb";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { useRouter } from "next/router";
 import { useUser } from "../../UserProvider";
 import NavMenuItem from "./NavMenuItem";
+import { BiArrowFromRight, BiArrowFromLeft } from "react-icons/bi";
 
 function NavMenu() {
   const { user } = useUser();
   const { colorMode } = useColorMode();
   const router = useRouter();
-  const borderColor =
-    colorMode === "light" ? "blackAlpha.500" : "whiteAlpha.500";
+  const light = colorMode === 'light';
 
   const [selectedId, setSelectedId] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     router.pathname === '/dashboard' ? setSelectedId("1") : 
@@ -26,21 +27,32 @@ function NavMenu() {
   return (
     <Box
       h="100vh"
-      w="15%"
+      w={collapsed ? "60px" : "275px"}
       borderRight={colorMode === "light" ? "1px" : "1px"}
       borderColor={colorMode === "light" ? "lightgray" : "black"}
     >
+      {collapsed}
+      <Flex justify={collapsed ? "center" : "flex-end"}>
+        <Button bg={light ? "white": "gray.800"} p={0} m={collapsed ? 0 : 1} mx={collapsed ? 0 : 2} my={collapsed ? 2 : 1} onClick={() => setCollapsed(!collapsed)}>
+          <Icon
+            as={collapsed ? BiArrowFromLeft : BiArrowFromRight}
+            boxSize={5}
+            color={light ? "gray.700": 'white'}
+          />
+        </Button>
+      </Flex>
       <Flex
         alignItems="center"
         justify="center"
-        p={4}
-        borderColor={borderColor}
+        mb={4}
       >
         <Icon as={AiFillBug} boxSize={8} color="blue.500" />
-        <Box ml={3} fontWeight="bold" textColor="blue.600">
-          <Box>Bug</Box>
-          <Box>Tracker</Box>
-        </Box>
+        {!collapsed && (
+          <Box ml={3} fontWeight="bold" textColor="blue.600">
+            <Box>Bug</Box>
+            <Box>Tracker</Box>
+          </Box>
+        )}
       </Flex>
 
       <Flex>
@@ -54,6 +66,7 @@ function NavMenu() {
         icon={AiOutlineDashboard}
         selectedId={selectedId}
         setSelectedId={setSelectedId}
+        collapsed={collapsed}
       />
       <NavMenuItem
         id="2"
@@ -62,6 +75,7 @@ function NavMenu() {
         icon={AiOutlineFolder}
         selectedId={selectedId}
         setSelectedId={setSelectedId}
+        collapsed={collapsed}
       />
       <NavMenuItem
         id="3"
@@ -70,6 +84,7 @@ function NavMenu() {
         icon={TbNotes}
         selectedId={selectedId}
         setSelectedId={setSelectedId}
+        collapsed={collapsed}
       />
       {user?.role === "admin" && (
         <NavMenuItem
@@ -79,6 +94,7 @@ function NavMenu() {
           icon={MdOutlineAdminPanelSettings}
           selectedId={selectedId}
           setSelectedId={setSelectedId}
+          collapsed={collapsed}
         />
       )}
     </Box>
