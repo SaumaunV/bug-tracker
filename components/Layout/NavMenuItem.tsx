@@ -10,26 +10,30 @@ interface Props {
   icon: IconType;
   selectedId: string;
   setSelectedId: Dispatch<React.SetStateAction<string>>;
+  collapsed: boolean;
 }
 
-function NavMenuItem({ id, title, route, icon, selectedId, setSelectedId }: Props) {
+function NavMenuItem({ id, title, route, icon, selectedId, setSelectedId, collapsed }: Props) {
     const { colorMode } = useColorMode();
     const router = useRouter();
     const selected = selectedId === id;
+    const light = colorMode === 'light';
 
     return (
       <Flex
         p={3}
-        mx={3}
+        mx={collapsed ? 2 : 3}
         mt={3}
+        justify={collapsed ? "center": ""}
+        align='center'
         cursor="pointer"
         borderRadius="lg"
-        textColor={selected ? "blue.600" : ""}
-        bg={selected ? "blue.50" : "whiteAlpha.200"}
+        textColor={selected && light ? "blue.600" : selected && !light ? 'blue.100' :  ""}
+        bg={selected && light ? "blue.50" : selected && !light ? 'blue.900' : ""}
         fontWeight={selected ? 'bold' : "normal"}
         _hover={{
-          bg: colorMode === "light" ? "blue.50" : "whiteAlpha.200",
-          textColor: selected ? "blue.600" : "blue.500",
+          bg: light ? "blue.50" : selected && !light ? 'blue.900' : "whiteAlpha.200",
+          textColor: selected && light ? "blue.600" : selected && !light ? 'blue.100' : !selected && light ? "blue.500" : "blue.50",
         }}
         transitionDuration="200ms"
         onClick={() => {
@@ -37,8 +41,8 @@ function NavMenuItem({ id, title, route, icon, selectedId, setSelectedId }: Prop
           setSelectedId(id);
         }}
       >
-        <Icon as={icon} boxSize={5} ml={2} />
-        <Box ml={3}>{title}</Box>
+        <Icon as={icon} boxSize={collapsed && selected ? 8 : collapsed ? 7 : 5} ml={collapsed ? 0 : 2} />
+        {!collapsed && <Box ml={3}>{title}</Box>}
       </Flex>
     );
 }
