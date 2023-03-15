@@ -34,7 +34,7 @@ function Layout({ children }: Props) {
             overflow="auto"
             overflowX="hidden"
             flex={1}
-            bg={colorMode === "light" ? "gray.50" : ""}
+            bg={colorMode === "light" ? "white" : ""}
             sx={{
               "&::-webkit-scrollbar": {
                 width: "12px",
