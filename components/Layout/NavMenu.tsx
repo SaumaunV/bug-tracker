@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Divider, Flex, Icon, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Icon, useColorMode, useMediaQuery } from "@chakra-ui/react";
 import { AiFillBug, AiOutlineDashboard, AiOutlineFolder } from "react-icons/ai";
 import { TbNotes } from "react-icons/tb";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
@@ -12,6 +12,7 @@ function NavMenu() {
   const { user } = useUser();
   const { colorMode } = useColorMode();
   const router = useRouter();
+  const [isSmallerThan600] = useMediaQuery('(max-width: 800px)');
   const light = colorMode === 'light';
 
   const [selectedId, setSelectedId] = useState("");
@@ -25,39 +26,47 @@ function NavMenu() {
   }, []);
 
   return (
-    <Box
-      h="100vh"
-      w={collapsed ? "60px" : "275px"}
-      borderRight={colorMode === "light" ? "1px" : "1px"}
-      borderColor={colorMode === "light" ? "lightgray" : "black"}
+    <Flex
+      direction={isSmallerThan600 ? "row" : "column"}
+      h={isSmallerThan600 ? "60px" : "100vh"}
+      w={collapsed ? "60px" : isSmallerThan600 ? "100vw" : "275px"}
+      justify={isSmallerThan600 ? "space-evenly" : ""}
+      borderRight={light && !isSmallerThan600 ? "1px" : isSmallerThan600 ? "0px" : "1px"}
+      borderColor={light ? "lightgray" : isSmallerThan600 ? "" : "black"}
     >
-      {collapsed}
-      <Flex justify={collapsed ? "center" : "flex-end"}>
-        <Button bg={light ? "white": "gray.800"} p={0} m={collapsed ? 0 : 1} mx={collapsed ? 0 : 2} my={collapsed ? 2 : 1} onClick={() => setCollapsed(!collapsed)}>
-          <Icon
-            as={collapsed ? BiArrowFromLeft : BiArrowFromRight}
-            boxSize={5}
-            color={light ? "gray.700": 'white'}
-          />
-        </Button>
-      </Flex>
-      <Flex
-        alignItems="center"
-        justify="center"
-        mb={4}
-      >
-        <Icon as={AiFillBug} boxSize={8} color="blue.500" />
-        {!collapsed && (
-          <Box ml={3} fontWeight="bold" textColor="blue.600">
-            <Box>Bug</Box>
-            <Box>Tracker</Box>
-          </Box>
-        )}
-      </Flex>
+      {!isSmallerThan600 && (
+        <>
+          <Flex justify={collapsed ? "center" : "flex-end"}>
+            <Button
+              bg={light ? "white" : "gray.800"}
+              p={0}
+              m={collapsed ? 0 : 1}
+              mx={collapsed ? 0 : 2}
+              my={collapsed ? 2 : 1}
+              onClick={() => setCollapsed(!collapsed)}
+            >
+              <Icon
+                as={collapsed ? BiArrowFromLeft : BiArrowFromRight}
+                boxSize={5}
+                color={light ? "gray.700" : "white"}
+              />
+            </Button>
+          </Flex>
+          <Flex alignItems="center" justify="center" mb={4}>
+            <Icon as={AiFillBug} boxSize={8} color="blue.500" />
+            {!collapsed && (
+              <Box ml={3} fontWeight="bold" textColor="blue.600">
+                <Box>Bug</Box>
+                <Box>Tracker</Box>
+              </Box>
+            )}
+          </Flex>
 
-      <Flex>
-        <Divider mx={5} mb={3} />
-      </Flex>
+          <Flex>
+            <Divider mx={5} mb={3} />
+          </Flex>
+        </>
+      )}
 
       <NavMenuItem
         id="1"
@@ -97,7 +106,7 @@ function NavMenu() {
           collapsed={collapsed}
         />
       )}
-    </Box>
+    </Flex>
   );
 }
 
