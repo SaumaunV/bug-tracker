@@ -1,4 +1,4 @@
-import { Center, Flex, Spinner, useColorMode } from "@chakra-ui/react";
+import { Center, Flex, Spinner, useColorMode, useMediaQuery } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useUser } from "../../UserProvider";
@@ -13,6 +13,7 @@ function Layout({ children }: Props) {
   const { user, loading, setUser } = useUser();
   const { colorMode } = useColorMode();
   const router = useRouter();
+  const [isSmallerThan600] = useMediaQuery("(max-width: 800px)");
 
   if (loading)
     return (
@@ -26,7 +27,7 @@ function Layout({ children }: Props) {
   } else
     return (
       <Flex h="100vh">
-        <NavMenu />
+        {!isSmallerThan600 && <NavMenu />}
         <Flex direction="column" flex={1} overflow="hidden">
           <Header />
           <Flex
@@ -49,6 +50,7 @@ function Layout({ children }: Props) {
           >
             {children}
           </Flex>
+          {isSmallerThan600 && <NavMenu />}
         </Flex>
       </Flex>
     );
