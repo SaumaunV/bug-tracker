@@ -12,6 +12,7 @@ import { Inter } from "@next/font/google";
 const client = new ApolloClient({
   //uri: "http://localhost:4000/graphql",
   uri: "https://bugtracker-backend.onrender.com/graphql",
+  credentials: "include",
   cache: new InMemoryCache(),
 });
 
