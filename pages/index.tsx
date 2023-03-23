@@ -3,15 +3,13 @@ import {
   Flex,
   Spinner,
   Center,
+  LightMode,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { NextPage } from "next";
 import RegisterForm from "../components/Forms/RegisterForm";
 import LoginForm from "../components/Forms/LoginForm";
-
-const link = "https://bugtracker-backend.onrender.com/login";
-//const link = 'http://localhost:4000/login'
 
 export default function Home() {
   const { user, loading: userLoading, setUser, setIsDemo } = useUser();
@@ -26,28 +24,30 @@ export default function Home() {
     </Center>
   ); 
   else return (
-    <Flex
-      h="100vh"
-      bgColor="lightgray"
-      alignItems="center"
-      justify="center"
-      direction={"column"}
-    >
-      {showRegister ? (
-        <RegisterForm
-          setShowRegister={setShowRegister}
-          setUser={setUser}
-          setLoading={setLoading}
-        />
-      ) : (
-        <LoginForm
-          setShowRegister={setShowRegister}
-          setUser={setUser}
-          setLoading={setLoading}
-          setIsDemo={setIsDemo}
-        />
-      )}
-    </Flex>
+    <LightMode>
+      <Flex
+        h="100vh"
+        bgColor="lightgray"
+        alignItems="center"
+        justify="center"
+        direction={"column"}
+      >
+        {showRegister ? (
+          <RegisterForm
+            setShowRegister={setShowRegister}
+            setUser={setUser}
+            setLoading={setLoading}
+          />
+        ) : (
+          <LoginForm
+            setShowRegister={setShowRegister}
+            setUser={setUser}
+            setLoading={setLoading}
+            setIsDemo={setIsDemo}
+          />
+        )}
+      </Flex>
+    </LightMode>
   );
 }
 
