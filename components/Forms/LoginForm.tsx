@@ -13,6 +13,7 @@ import {
   Box,
   Icon,
   AlertDescription,
+  LightMode,
 } from "@chakra-ui/react";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
@@ -86,6 +87,7 @@ export default function LoginForm({
       alignItems={"center"}
       p="10"
       maxWidth="500px"
+      color="black"
     >
       <Heading as="h1" mb={10} fontFamily="inherit">
         Sign In
@@ -108,7 +110,7 @@ export default function LoginForm({
         >
           <Flex direction="column" alignItems="center" justify={"center"}>
             <Icon as={AiOutlineUser} boxSize={8} color="orange.500" />
-            <Text>Admin</Text>
+            <Text mt={1}>Admin</Text>
           </Flex>
         </Button>
         <Button
@@ -130,17 +132,11 @@ export default function LoginForm({
             w="50px"
           >
             <Icon as={AiOutlineUser} boxSize={8} color="green.500" />
-            <Text>Developer</Text>
+            <Text mt={1}>Developer</Text>
           </Flex>
         </Button>
       </Flex>
 
-      {invalidLogin && (
-        <Alert status="error" variant="subtle" mb={5}>
-          <AlertIcon />
-          <AlertTitle>Invalid user info</AlertTitle>
-        </Alert>
-      )}
       <Flex width="100%" flex={1} my={10} alignItems="center">
         <Box height="1px" backgroundColor={"lightgray"} flex="1"></Box>
         <Text mx={5} color="gray">
@@ -149,23 +145,38 @@ export default function LoginForm({
         <Box height="1px" backgroundColor={"lightgray"} flex="1"></Box>
       </Flex>
 
+      {invalidLogin && (
+        <Alert status="error" variant="subtle" mb={5} borderRadius="md">
+          <AlertIcon />
+          <AlertTitle>Invalid user info</AlertTitle>
+        </Alert>
+      )}
       <FormControl>
         <FormLabel htmlFor="username">Username</FormLabel>
         <Input
+          sx={{
+            "&:-webkit-autofill, &:-webkit-autofill:focus": {
+              transition: "background-color 600000s 0s, color 600000s 0s",
+            },
+          }}
           type="text"
+          textColor="black"
           id="username"
+          colorScheme="blue"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
         />
       </FormControl>
       <FormControl mt={4}>
         <FormLabel htmlFor="password">Password</FormLabel>
-        <Input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
+        <LightMode>
+          <Input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        </LightMode>
       </FormControl>
       <Button
         w={"100%"}
