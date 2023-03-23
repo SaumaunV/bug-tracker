@@ -58,6 +58,7 @@ function RegisterForm({ setShowRegister, setUser, setLoading }: Props) {
       alignItems={"center"}
       p="10"
       maxWidth="500px"
+      color='black'
     >
       <Heading mb={10} fontFamily="inherit">
         Create Account
