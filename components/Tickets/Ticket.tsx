@@ -21,7 +21,7 @@ const BadgeColors: colorType = {
   medium: "orange",
   testing: "orange",
   low: "green",
-  new: "'green",
+  new: "green",
   development: "yellow",
   unassigned: "grey"
 }
@@ -99,6 +99,7 @@ function Ticket({ ticket }: Props) {
         onClose={onCloseEditTicket}
         title="Edit Ticket"
         buttonText="Save"
+        userId={ticket.user_id!}
         update
       />
       <TicketInfoModal
