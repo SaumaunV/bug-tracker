@@ -97,7 +97,7 @@ function Header() {
           isOpen={isOpenTicket}
           onClose={onCloseTicket}
           title="Create Ticket"
-          buttonText="CreateTicket"
+          buttonText="Create Ticket"
         />
       )}
 
