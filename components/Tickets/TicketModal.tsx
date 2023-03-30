@@ -209,7 +209,6 @@ function TicketModal({ isOpen, onClose, ticket, title, buttonText, userId, updat
           <FormControl>
             <FormLabel>Assigned User</FormLabel>
             <Select
-              defaultValue=""
               value={userID}
               onChange={(e) => setUserID(e.target.value)}
             >
