@@ -13,7 +13,20 @@ const client = new ApolloClient({
   //uri: "http://localhost:4000/graphql",
   uri: "https://bugtracker-backend.onrender.com/graphql",
   credentials: "include",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          project: {
+            merge: true,
+          },
+          user: {
+            merge: true
+          }
+        },
+      },
+    },
+  }),
 });
 
 type Page<P = {}> = NextPage<P> & {
