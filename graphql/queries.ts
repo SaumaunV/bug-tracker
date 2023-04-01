@@ -15,6 +15,7 @@ export const GET_USER_ALL_TICKETS = gql(/* GraphQL */ `
   query GetAllUserTickets($id: ID!) {
     user(id: $id) {
       allTickets {
+        id
         type
         status
         priority
