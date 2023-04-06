@@ -37,6 +37,7 @@ function Ticket({ ticket }: Props) {
   const project = useQuery(GET_PROJECT, {variables: {id: ticket.project_id}});
   const user = useQuery(GET_USER_NAME, {variables: {id: ticket.user_id!}});
   const {colorMode} = useColorMode();
+  const date = new Date(ticket.created_at);
 
   return (
     <>
@@ -62,7 +63,7 @@ function Ticket({ ticket }: Props) {
             {ticket.priority}
           </Badge>
         </Td>
-        <Td>{ticket.created_at}</Td>
+        <Td>{date.toLocaleDateString()}</Td>
         <Td>
           <IconButton
             aria-label="View Ticket"
@@ -92,6 +93,7 @@ function Ticket({ ticket }: Props) {
         onClose={onClose}
         type="ticket"
         title="Delete Ticket"
+        projectId={ticket.project_id}
       />
       <TicketModal
         ticket={ticket}
