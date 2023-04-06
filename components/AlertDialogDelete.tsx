@@ -10,9 +10,10 @@ interface Props {
   onClose: () => void;
   type: string;
   title: string;
+  projectId?: string;
 }
 
-function AlertDialogDelete({ id, isOpen, onClose, type, title }: Props) {
+function AlertDialogDelete({ id, isOpen, onClose, type, title, projectId }: Props) {
     const { user, isDemo } = useUser();
     const toast = useToast();
     const [deleteProject, { error: errorProject }] = useMutation(DELETE_PROJECT, {
@@ -20,6 +21,7 @@ function AlertDialogDelete({ id, isOpen, onClose, type, title }: Props) {
     });
     const [deleteTicket, { error: errorTicket }] = useMutation(DELETE_TICKET, {
       refetchQueries: [
+        { query: GET_PROJECT, variables: { id: projectId } },
         { query: GET_USER_TICKETS, variables: { id: user?.id } },
       ],
     });
@@ -47,6 +49,7 @@ function AlertDialogDelete({ id, isOpen, onClose, type, title }: Props) {
             duration: 5000,
             isClosable: true,
           });
+          onClose();
     };
 
   return (
