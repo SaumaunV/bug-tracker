@@ -33,6 +33,7 @@ function TicketList({ padding, tickets} : Props) {
         bg={light ? "white" : "gray.700"}
         shadow="sm"
         height="max-content"
+        borderRadius='md'
       >
         <TableContainer>
           <Table variant="simple">
