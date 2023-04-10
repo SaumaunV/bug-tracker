@@ -16,6 +16,7 @@ function Admin() {
       <TableContainer
         p={5}
         bg={colorMode === "light" ? "white" : "gray.700"}
+        borderRadius='md'
       >
         <Table variant="simple">
           <Thead>
