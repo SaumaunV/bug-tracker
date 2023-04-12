@@ -1,5 +1,7 @@
-import { Badge, Box, Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { Badge, Box, Button, Flex, Icon, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { HiUsers } from 'react-icons/hi';
 
 interface Props {
   users:
@@ -14,21 +16,24 @@ interface Props {
   projectDesc: string | undefined | null;
 }
 
-function ProjectUsersModal({ users, projectDesc }: Props) {
+function ProjectInfoModal({ users, projectDesc }: Props) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isOpenDescription, onOpen: onOpenDescription, onClose: onCloseDescription } = useDisclosure();
     const [description, setDescription] = useState(false);
   return (
     <>
-      <Button
+      <IconButton
+        aria-label='Project description'
+        fontSize='20px'
+        icon={<InfoOutlineIcon />}
         onClick={() => {
           onOpenDescription();
           setDescription(true);
         }}
       >
         Description
-      </Button>
-      <Button onClick={onOpen}>Members</Button>
+      </IconButton>
+      <Button onClick={onOpen}><Icon as={HiUsers} boxSize={5} /></Button>
 
       <Modal
         isOpen={description ? isOpenDescription : isOpen}
@@ -36,7 +41,9 @@ function ProjectUsersModal({ users, projectDesc }: Props) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{description ? "Project Description" : "Members"}</ModalHeader>
+          <ModalHeader>
+            {description ? "Project Description" : "Members"}
+          </ModalHeader>
           <ModalCloseButton onClick={() => setDescription(false)} />
           <ModalBody>
             {description
@@ -58,10 +65,17 @@ function ProjectUsersModal({ users, projectDesc }: Props) {
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} onClick={description ? () => {
-                onCloseDescription();
-                setDescription(false);
-            } : onClose}>
+            <Button
+              mr={3}
+              onClick={
+                description
+                  ? () => {
+                      onCloseDescription();
+                      setDescription(false);
+                    }
+                  : onClose
+              }
+            >
               Close
             </Button>
           </ModalFooter>
@@ -71,4 +85,4 @@ function ProjectUsersModal({ users, projectDesc }: Props) {
   );
 }
 
-export default ProjectUsersModal
+export default ProjectInfoModal
