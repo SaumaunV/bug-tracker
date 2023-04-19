@@ -1,4 +1,4 @@
-import { AddIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -9,7 +9,6 @@ import {
   MenuItem,
   MenuList,
   useColorMode,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
@@ -21,16 +20,6 @@ import TicketModal from "../Tickets/TicketModal";
 function Header() {
   const {user, setUser} = useUser();
   const { colorMode, toggleColorMode } = useColorMode();
-  const {
-    isOpen: isOpenProject,
-    onOpen: onOpenProject,
-    onClose: onCloseProject,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenTicket,
-    onOpen: onOpenTicket,
-    onClose: onCloseTicket,
-  } = useDisclosure();
   const router = useRouter();
 
   const path = router.pathname.substring(1);
@@ -70,32 +59,10 @@ function Header() {
           : path[0].toUpperCase() + path.substring(1)}
       </Box>
       {path === "projects" && (
-        <Button
-          mr={5}
-          rightIcon={<AddIcon />}
-          colorScheme="messenger"
-          onClick={onOpenProject}
-        >
-          New Project
-        </Button>
-      )}
-      {path === "tickets" && (
-        <Button
-          mr={5}
-          rightIcon={<AddIcon />}
-          colorScheme="orange"
-          onClick={onOpenTicket}
-        >
-          New Ticket
-        </Button>
-      )}
-      {path === "projects" && (
-        <ProjectModal isOpen={isOpenProject} onClose={onCloseProject} />
+        <ProjectModal />
       )}
       {path === "tickets" && (
         <TicketModal
-          isOpen={isOpenTicket}
-          onClose={onCloseTicket}
           title="Create Ticket"
           buttonText="Create Ticket"
         />
