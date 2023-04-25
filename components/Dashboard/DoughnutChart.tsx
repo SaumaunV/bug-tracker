@@ -52,8 +52,8 @@ function DoughnutChart({ labels, label, title, data, first }: Props) {
               borderColor: ["blue", "red"],
               backgroundColor:
                 colorMode === "light"
-                  ? [Colors.blue, Colors.red]
-                  : [Colors.blueDark, Colors.redDark],
+                  ? [Colors.blue, Colors.red, Colors.orange]
+                  : [Colors.blueDark, Colors.redDark, Colors.orangeDark],
             },
           ],
         }}
