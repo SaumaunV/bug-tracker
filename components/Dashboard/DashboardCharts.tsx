@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box, Flex, useColorMode } from "@chakra-ui/react";
+import { Flex, useColorMode } from "@chakra-ui/react";
 import {
   Chart as ChartJS,
   Tooltip,
@@ -35,7 +35,7 @@ const TicketStatuses = Object.seal([
   "Testing",
   "Resolved",
 ]);
-const TicketTypes = Object.seal(["Feature", "Bug"]);
+const TicketTypes = Object.seal(["Feature", "Bug", "UI"]);
 const Colors = {
   red: "rgb(255, 99, 132, 0.5)",
   redDark: "rgb(255, 99, 132)",
@@ -69,7 +69,8 @@ function DashboardCharts() {
   
   let featureCount = 0;
   let bugCount = 0;
-  data?.user?.allTickets?.forEach(ticket => ticket.type === "feature" ? featureCount++ : bugCount++);
+  let uiCount = 0;
+  data?.user?.allTickets?.forEach(ticket => ticket.type === "feature" ? featureCount++ : ticket.type === 'bug' ? bugCount++ : uiCount++);
 
   const options = {
     plugins: {
@@ -103,9 +104,10 @@ function DashboardCharts() {
   if (error) return <h1>Error</h1>;
   return (
     <div>
-      <Flex p={10}>
-        <Box
+      <Flex m={10} justify='space-between' gap={20}>
+        <Flex
           flex={1}
+          minWidth='500px'
           minHeight="300px"
           shadow="md"
           border={colorMode === "light" ? "1px solid" : ""}
@@ -113,7 +115,6 @@ function DashboardCharts() {
           bg={colorMode === "dark" ? "gray.700" : "white"}
           rounded="md"
           p="5"
-          mr={10}
         >
           <Bar
             data={{
@@ -143,9 +144,10 @@ function DashboardCharts() {
             }}
             options={options}
           />
-        </Box>
-        <Box
+        </Flex>
+        <Flex
           flex={1}
+          minWidth='500px'
           minHeight="300px"
           shadow="md"
           border={colorMode === "light" ? "1px solid" : ""}
@@ -153,7 +155,6 @@ function DashboardCharts() {
           bg={colorMode === "dark" ? "gray.700" : "white"}
           rounded="md"
           p="5"
-          ml={10}
         >
           <Bar
             data={{
@@ -201,13 +202,13 @@ function DashboardCharts() {
               },
             }}
           />
-        </Box>
+        </Flex>
       </Flex>
       <Flex p={10}>
         <DoughnutChart
           labels={TicketTypes}
           label={"Number of Tickets"}
-          data={[featureCount, bugCount]}
+          data={[featureCount, bugCount, uiCount]}
           title="Tickets by Type"
           first        
         />
