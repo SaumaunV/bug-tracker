@@ -1,22 +1,13 @@
 import { useQuery } from '@apollo/client';
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Text, useDisclosure } from '@chakra-ui/react'
 import React from 'react'
 import { GET_USER_NAME } from '../../graphql/queries';
-import { EditIcon, ViewIcon } from '@chakra-ui/icons';
+import { Ticket, User } from '../../src/__generated__/graphql';
+import TicketCardModal from './TicketCardModal';
 
 interface Props {
-  ticket: {
-    __typename?: "Ticket" | undefined;
-    id: string;
-    name: string;
-    description: string;
-    type: string;
-    status: string;
-    priority: string;
-    created_at: string;
-    user_id?: string | null | undefined;
-    project_id: string;
-  };
+  ticket: Ticket;
+  users: User[] | null | undefined;
 }
 
 interface colorType {
@@ -30,7 +21,8 @@ const colors: colorType = {
   low: "green"
 }
 
-function TicketCard({ ticket }: Props) {
+function TicketCard({ ticket, users }: Props) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useQuery(GET_USER_NAME, { variables: { id: ticket.user_id! } });
   return (
     <Flex
@@ -43,6 +35,9 @@ function TicketCard({ ticket }: Props) {
       py={2}
       px={3}
       fontWeight={"semibold"}
+      _hover={{bgGradient: `linear(to-b, ${colors[ticket.priority]}.200, ${colors[ticket.priority]}.200)`}}
+      cursor='pointer'
+      onClick={onOpen}
     >
       <Flex direction="column" w="200px" justifyContent="space-between">
         <Text mb={8}>{ticket.name}</Text>
@@ -62,6 +57,7 @@ function TicketCard({ ticket }: Props) {
         <Box></Box>
         {ticket.priority.toUpperCase()}
       </Flex>
+      <TicketCardModal ticket={ticket} users={users} isOpen={isOpen} onClose={onClose} />
     </Flex>
   );
 }
