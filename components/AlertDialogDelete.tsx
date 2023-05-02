@@ -6,16 +6,15 @@ import { useUser } from '../UserProvider';
 
 interface Props {
   id: string;
-  isOpen: boolean;
-  onClose: () => void;
   type: string;
   title: string;
   projectId?: string;
 }
 
-function AlertDialogDelete({ id, isOpen, onClose, type, title, projectId }: Props) {
+function AlertDialogDelete({ id, type, title, projectId }: Props) {
     const { user, isDemo } = useUser();
     const toast = useToast();
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [deleteProject, { error: errorProject }] = useMutation(DELETE_PROJECT, {
       refetchQueries: [{ query: GET_PROJECTS, variables: {id: user?.id} }, "GetAllProjects"],
     });
@@ -53,36 +52,41 @@ function AlertDialogDelete({ id, isOpen, onClose, type, title, projectId }: Prop
     };
 
   return (
-    <AlertDialog
-      isOpen={isOpen}
-      leastDestructiveRef={cancelRef}
-      onClose={onClose}
-    >
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            {title}
-          </AlertDialogHeader>
+    <>
+      <Button colorScheme="red" onClick={onOpen}>
+        Delete
+      </Button>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              {title}
+            </AlertDialogHeader>
 
-          <AlertDialogBody>
-            Are you sure? You can't undo this action afterwards.
-          </AlertDialogBody>
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
 
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button
-              colorScheme="red"
-              onClick={isDemo ? onClose : handleDelete}
-              ml={3}
-            >
-              Delete
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={isDemo ? onClose : handleDelete}
+                ml={3}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
   );
 }
 
