@@ -1,10 +1,11 @@
-import { Box, Button, Flex, Heading, Select, Textarea, Toast } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Select, Textarea, Toast, useColorMode } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import TicketCard from './TicketCard';
 import { AddIcon } from '@chakra-ui/icons';
 import { useMutation } from '@apollo/client';
 import { CREATE_TICKET, GET_PROJECT } from '../../graphql/queries';
 import { Ticket, User } from '../../src/__generated__/graphql';
+import { useUser } from '../../UserProvider';
 
 interface Props {
   name: string;
@@ -14,6 +15,8 @@ interface Props {
 }
 
 function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
+  const { isDemo } = useUser();
+  const { colorMode } = useColorMode();
   const [newTicket, setNewTicket] = useState(false);
   const [newTicketName, setNewTicketName ] = useState("");
   const [ticketType, setTicketType] = useState('bug');
@@ -23,16 +26,17 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
       { query: GET_PROJECT, variables: { id: projectId } },
     ],
   });
+  const light = colorMode === "light";
 
   return (
-    <Flex w="300px" direction="column" bg="gray.700" borderRadius="md" p={2}>
-      <Heading fontSize="sm" m={3} textColor="gray.400">
+    <Flex w="300px" direction="column" bg={light ? "gray.50" : "gray.700"} borderRadius="md" p={2}>
+      <Heading fontSize="sm" m={3} textColor={light ? "gray.500" : "gray.400"}>
         {name}
       </Heading>
       {tickets?.map((ticket) => (
         <TicketCard key={ticket.id} ticket={ticket} users={users} />
       ))}
-      {name === "NEW" && !newTicket ? (
+      {name === "NEW" && !newTicket && !isDemo ? (
         <Button
           mt={2}
           rounded="sm"
@@ -40,17 +44,19 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
           alignItems="center"
           bg={"inherit"}
           leftIcon={<AddIcon />}
-          onClick={() => setNewTicket(true)}
+          onClick={async () => setNewTicket(true)}
+          _hover={light ? {bg: "gray.200"} : {bg: "gray.600"}}
         >
           Create ticket
         </Button>
-      ) : name === "NEW" && newTicket ? (
+      ) : name === "NEW" && newTicket && !isDemo? (
         <Box
-          bg="gray.800"
+          bg={light ? "white" : "gray.800"}
           rounded="sm"
-          _focusWithin={{ boxShadow: "0 0 5px 3px royalblue" }}
+          _focusWithin={{ boxShadow: `0 0 3px 2px ${ light ? 'cornflowerblue' : 'royalblue'}` }}
         >
           <Textarea
+            autoFocus
             mt={2}
             value={newTicketName}
             border="none"
@@ -59,6 +65,8 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
             onKeyDown={async (e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
+                setNewTicket(false);
+                setNewTicketName("");
                 await createTicket({
                   variables: {
                     input: {
@@ -78,7 +86,10 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
-                  });
+                  });                
+              }
+              else if(e.key === 'Escape' || e.key === 'Esc') {
+                e.preventDefault();
                 setNewTicket(false);
                 setNewTicketName("");
               }
