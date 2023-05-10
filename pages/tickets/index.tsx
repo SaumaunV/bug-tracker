@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 import TicketList from "../../components/Tickets/TicketList";
 import { GET_USER_TICKETS } from "../../graphql/queries";
 import { useUser } from "../../UserProvider";
+import { Skeleton } from "@chakra-ui/react";
 
 
 function Tickets() {
@@ -14,6 +15,8 @@ function Tickets() {
       getUserTickets({variables: {id: user.id}});
     };
   }, [user])
+
+  if(loading) return <Skeleton m={10} h="150px"></Skeleton>;
 
   return <TicketList padding={10} tickets={data?.userTickets}/>;
 }

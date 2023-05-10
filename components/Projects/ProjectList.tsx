@@ -1,4 +1,4 @@
-import { Flex, useColorMode } from "@chakra-ui/react";
+import { Flex, Skeleton, useColorMode } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Project from "./Project";
@@ -17,7 +17,7 @@ function ProjectList() {
       });
   }, [user]);
 
-  if (loading) return <h1>data is loading</h1>;
+  if (loading) return <Skeleton m={10} h="150px"></Skeleton>;
   else if (error) {
     return <h1>Error has occurred</h1>;
   }
