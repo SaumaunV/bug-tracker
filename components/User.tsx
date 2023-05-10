@@ -76,6 +76,7 @@ function User({ user }: Props) {
           {!editing && (
             <IconButton
               aria-label="Edit User"
+              mr={5}
               icon={<EditIcon />}
               colorScheme={colorMode === "dark" ? "facebook" : "gray"}
               onClick={() => setEditing(true)}
@@ -105,23 +106,9 @@ function User({ user }: Props) {
               />
             </>
           )}
-
-          <IconButton
-            aria-label="Delete User"
-            icon={<DeleteIcon />}
-            colorScheme="red"
-            onClick={onOpen}
-            ml={3}
-          />
+          <AlertDialogDelete id={user?.id!} type="user" title="Delete User" />
         </Td>
       </Tr>
-      <AlertDialogDelete
-        id={user?.id!}
-        isOpen={isOpen}
-        onClose={onClose}
-        type="user"
-        title="Delete User"
-      />
     </>
   );
 }
