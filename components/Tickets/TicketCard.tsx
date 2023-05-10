@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Box, Flex, Text, useDisclosure } from '@chakra-ui/react'
+import { Box, Flex, Text, useColorMode, useDisclosure } from '@chakra-ui/react'
 import React from 'react'
 import { GET_USER_NAME } from '../../graphql/queries';
 import { Ticket, User } from '../../src/__generated__/graphql';
@@ -23,20 +23,23 @@ const colors: colorType = {
 
 function TicketCard({ ticket, users }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
   const user = useQuery(GET_USER_NAME, { variables: { id: ticket.user_id! } });
+  const light = colorMode === "light";
+  
   return (
     <Flex
-      bgGradient={`linear(to-b, ${colors[ticket.priority]}.300, ${
-        colors[ticket.priority]
-      }.400)`}
+      bg={light ? `${colors[ticket.priority]}.100` : `${colors[ticket.priority]}.300`}
       textColor="black"
       rounded="sm"
       my={2}
       py={2}
       px={3}
       fontWeight={"semibold"}
-      _hover={{bgGradient: `linear(to-b, ${colors[ticket.priority]}.200, ${colors[ticket.priority]}.200)`}}
-      cursor='pointer'
+      _hover={{
+        bg: `${colors[ticket.priority]}.200`,
+      }}
+      cursor="pointer"
       onClick={onOpen}
     >
       <Flex direction="column" w="200px" justifyContent="space-between">
@@ -57,7 +60,12 @@ function TicketCard({ ticket, users }: Props) {
         <Box></Box>
         {ticket.priority.toUpperCase()}
       </Flex>
-      <TicketCardModal ticket={ticket} users={users} isOpen={isOpen} onClose={onClose} />
+      <TicketCardModal
+        ticket={ticket}
+        users={users}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </Flex>
   );
 }
