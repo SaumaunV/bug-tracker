@@ -46,6 +46,7 @@ function DoughnutChart({ labels, label, title, data, first }: Props) {
           labels,
           datasets: [
             {
+              animation: false,
               label,
               data,
               borderWidth: colorMode === "light" ? 1 : 0,
