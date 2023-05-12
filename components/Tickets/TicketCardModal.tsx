@@ -1,13 +1,24 @@
 import React, { useState } from 'react'
 import { Ticket } from '../../src/__generated__/graphql'
 import { Button, Flex, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Select, Text, Textarea } from '@chakra-ui/react';
-import { User, useUser } from '../../UserProvider';
+import { useUser } from '../../UserProvider';
 import { useMutation } from '@apollo/client';
 import { GET_PROJECT, UPDATE_TICKET } from '../../graphql/queries';
+import AlertDialogDelete from '../AlertDialogDelete';
 
 interface Props {
   ticket: Ticket;
-  users: User[] | null | undefined;
+  users:
+    | {
+        __typename?: "User" | undefined;
+        id: string;
+        username: string;
+        role: string;
+      }[]
+    | null
+    | undefined
+    | null
+    | undefined;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -170,19 +181,29 @@ function TicketCardModal({ ticket, users, isOpen, onClose } : Props) {
           </FormControl>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme={"gray"} mr={3} onClick={onClose}>
-            Close
-          </Button>
-          {!isDemo && update && (
-            <Button type="submit" colorScheme={"orange"}>
-              <Flex alignItems="flex-end">
-                <Text fontSize="md">Update</Text>
-                <Text fontSize="sm" ml={1} verticalAlign='sub'>
-                  ({updateCount} {updateCount === 1 ? "Change" : "Changes"})
-                </Text>
-              </Flex>
-            </Button>
-          )}
+          <Flex w="100%" justify="space-between">
+            <AlertDialogDelete
+              id={ticket.id}
+              type="ticket"
+              title="Delete Ticket"
+              onCloseParent={onClose}
+            />
+            <Flex>
+              <Button colorScheme={"gray"} mr={3} onClick={onClose}>
+                Close
+              </Button>
+              {!isDemo && update && (
+                <Button type="submit" colorScheme={"orange"}>
+                  <Flex alignItems="flex-end">
+                    <Text fontSize="md">Update</Text>
+                    <Text fontSize="sm" ml={1} verticalAlign="sub">
+                      ({updateCount} {updateCount === 1 ? "Change" : "Changes"})
+                    </Text>
+                  </Flex>
+                </Button>
+              )}
+            </Flex>
+          </Flex>
         </ModalFooter>
       </ModalContent>
     </Modal>
