@@ -1,4 +1,4 @@
-import {Flex, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useColorMode } from '@chakra-ui/react';
+import {Flex, Table, TableContainer, Tbody, Th, Thead, Tr, useColorMode } from '@chakra-ui/react';
 import React from 'react'
 import TicketItem from './Ticket';
 
@@ -26,17 +26,21 @@ function TicketList({ padding, tickets} : Props) {
   const light = colorMode === "light";
 
   return (
-    <Flex flex={1} p={padding} bg={light ? "gray.50" : ""} >
+    <Flex flex={1} p={padding} bg={light ? "gray.50" : ""}>
       <Flex
-        p={10}
+        px={10}
+        py={3}
         border={light ? "1px solid lightgray" : ""}
         bg={light ? "white" : "gray.700"}
         shadow="sm"
         height="max-content"
-        borderRadius='md'
+        borderRadius="md"
       >
         <TableContainer>
-          <Table variant="simple">
+          <Table
+            variant="simple"
+            style={{ borderCollapse: "separate", borderSpacing: "0 1.5em" }}
+          >
             <Thead>
               <Tr>
                 <Th>Name</Th>
@@ -45,12 +49,11 @@ function TicketList({ padding, tickets} : Props) {
                 <Th>Status</Th>
                 <Th>Priority</Th>
                 <Th>Date</Th>
-                <Th>Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
               {tickets?.map((ticket) => (
-                <TicketItem key={ticket.id} ticket={ticket}/>
+                <TicketItem key={ticket.id} ticket={ticket} />
               ))}
             </Tbody>
           </Table>
