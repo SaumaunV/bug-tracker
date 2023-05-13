@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure, useToast } from '@chakra-ui/react';
 import React, { useRef } from 'react'
-import { DELETE_PROJECT, DELETE_TICKET, DELETE_USER, GET_PROJECT, GET_PROJECTS, GET_TICKETS, GET_USERS, GET_USER_TICKETS } from '../graphql/queries';
+import { DELETE_PROJECT, DELETE_TICKET, DELETE_USER, GET_PROJECT, GET_PROJECTS, GET_USERS, GET_USER_TICKETS } from '../graphql/queries';
 import { useUser } from '../UserProvider';
 
 interface Props {
@@ -9,9 +9,10 @@ interface Props {
   type: string;
   title: string;
   projectId?: string;
+  onCloseParent?: () => void;
 }
 
-function AlertDialogDelete({ id, type, title, projectId }: Props) {
+function AlertDialogDelete({ id, type, title, projectId, onCloseParent }: Props) {
     const { user, isDemo } = useUser();
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,11 +50,12 @@ function AlertDialogDelete({ id, type, title, projectId }: Props) {
             isClosable: true,
           });
           onClose();
+          if(onCloseParent) onCloseParent();
     };
 
   return (
     <>
-      <Button colorScheme="red" onClick={onOpen}>
+      <Button variant='ghost' colorScheme="red" onClick={onOpen}>
         Delete
       </Button>
       <AlertDialog
