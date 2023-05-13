@@ -187,6 +187,7 @@ function TicketCardModal({ ticket, users, isOpen, onClose } : Props) {
               type="ticket"
               title="Delete Ticket"
               onCloseParent={onClose}
+              projectId={ticket.project_id}
             />
             <Flex>
               <Button colorScheme={"gray"} mr={3} onClick={onClose}>
