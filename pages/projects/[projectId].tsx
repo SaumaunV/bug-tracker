@@ -34,12 +34,11 @@ function ProjectDetail() {
           />
           <AddUserModal project_id={data?.project.id!} userList={addUserList} />
           <TicketModal
-            title="Create Ticket"
-            buttonText="Create Ticket"
             project={{
               id: router.query.projectId as string,
               name: data?.project.name!,
             }}
+            users={projectUsers}
           />
         </Flex>
       </Flex>
