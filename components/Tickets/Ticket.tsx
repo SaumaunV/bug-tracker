@@ -1,11 +1,9 @@
 import { useQuery } from '@apollo/client';
-import { DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons';
-import { Badge, IconButton, Td, Tr, useColorMode, useDisclosure} from '@chakra-ui/react';
-import { GET_PROJECT, GET_USER_NAME } from '../../graphql/queries';
+import { Badge, Td, Tr, useDisclosure} from '@chakra-ui/react';
+import { GET_PROJECT } from '../../graphql/queries';
 import { Ticket } from '../../src/__generated__/graphql';
-import AlertDialogDelete from '../AlertDialogDelete';
-import TicketInfoModal from './TicketInfoModal';
-import TicketModal from './TicketModal';
+import TicketCardModal from './TicketCardModal';
+import { useUser } from '../../UserProvider';
 
 interface Props {
   ticket: Ticket;
@@ -27,24 +25,17 @@ const BadgeColors: colorType = {
 }
 
 function Ticket({ ticket }: Props) {
+  const { user } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenEditTicket, onOpen: onOpenEditTicket, onClose: onCloseEditTicket } = useDisclosure({id: "ticket-modal"});
-  const {
-    isOpen: isOpenViewTicket,
-    onOpen: onOpenViewTicket,
-    onClose: onCloseViewTicket,
-  } = useDisclosure();
   const project = useQuery(GET_PROJECT, {variables: {id: ticket.project_id}});
-  const user = useQuery(GET_USER_NAME, {variables: {id: ticket.user_id!}});
-  const {colorMode} = useColorMode();
   const date = new Date(ticket.created_at);
 
   return (
     <>
-      <Tr>
+      <Tr onClick={onOpen} cursor='pointer'>
         <Td>{ticket.name}</Td>
         <Td>{project.data?.project.name}</Td>
-        <Td>{user.data?.user?.username || "Unassigned"}</Td>
+        <Td>{user?.username || "Unassigned"}</Td>
         <Td>
           <Badge
             variant="outline"
@@ -64,50 +55,12 @@ function Ticket({ ticket }: Props) {
           </Badge>
         </Td>
         <Td>{date.toLocaleDateString()}</Td>
-        <Td>
-          <IconButton
-            aria-label="View Ticket"
-            icon={<ViewIcon />}
-            colorScheme={colorMode === "dark" ? "facebook" : "gray"}
-            onClick={onOpenViewTicket}
-          />
-          <IconButton
-            aria-label="Edit Ticket"
-            icon={<EditIcon />}
-            colorScheme={colorMode === "dark" ? "facebook" : "gray"}
-            onClick={onOpenEditTicket}
-            ml={2}
-          />
-          <IconButton
-            aria-label="Delete Ticket"
-            icon={<DeleteIcon />}
-            colorScheme="red"
-            onClick={onOpen}
-            ml={10}
-          />
-        </Td>
       </Tr>
-      <AlertDialogDelete
-        id={ticket.id}
+      <TicketCardModal
+        ticket={ticket}
+        users={project.data?.project.users}
         isOpen={isOpen}
         onClose={onClose}
-        type="ticket"
-        title="Delete Ticket"
-        projectId={ticket.project_id}
-      />
-      <TicketModal
-        ticket={ticket}
-        isOpen={isOpenEditTicket}
-        onClose={onCloseEditTicket}
-        title="Edit Ticket"
-        buttonText="Save"
-        userId={ticket.user_id!}
-        update
-      />
-      <TicketInfoModal
-        ticket={ticket}
-        isOpen={isOpenViewTicket}
-        onClose={onCloseViewTicket}
       />
     </>
   );
