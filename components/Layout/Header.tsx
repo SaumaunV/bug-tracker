@@ -61,12 +61,6 @@ function Header() {
       {path === "projects" && (
         <ProjectModal />
       )}
-      {path === "tickets" && (
-        <TicketModal
-          title="Create Ticket"
-          buttonText="Create Ticket"
-        />
-      )}
 
       <Button
         p={2}
