@@ -18,7 +18,7 @@ import ProjectModal from "../Projects/ProjectModal";
 import TicketModal from "../Tickets/TicketModal";
 
 function Header() {
-  const {user, setUser} = useUser();
+  const { setUser } = useUser();
   const { colorMode, toggleColorMode } = useColorMode();
   const router = useRouter();
 
@@ -47,10 +47,7 @@ function Header() {
   }
 
   return (
-    <Flex
-      alignItems="center"
-      h={14}
-    >
+    <Flex alignItems="center" h={14}>
       <Box flex={1} ml={10} fontSize="2xl" fontWeight="bold">
         {path.includes("projects/")
           ? "Project Details"
@@ -58,9 +55,8 @@ function Header() {
           ? "Ticket Details"
           : path[0].toUpperCase() + path.substring(1)}
       </Box>
-      {path === "projects" && (
-        <ProjectModal />
-      )}
+      {path === "projects" && <ProjectModal />}
+      {path === "tickets" && <TicketModal />}
 
       <Button
         p={2}

@@ -19,8 +19,8 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useMutation, useQuery } from '@apollo/client';
-import { CREATE_TICKET, GET_PROJECT, GET_PROJECTS, GET_USER_TICKETS } from '../../graphql/queries';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { CREATE_TICKET, GET_PROJECT, GET_PROJECTS, GET_PROJECT_USERS, GET_USER_TICKETS } from '../../graphql/queries';
 import { Ticket, User } from '../../src/__generated__/graphql';
 import { useUser } from '../../UserProvider';
 import { AddIcon } from '@chakra-ui/icons';
@@ -29,7 +29,7 @@ interface Props {
   ticket?: Ticket;
   userId?: string;
   project?: {id: string; name: string}; 
-  users: User[] | null | undefined
+  users?: User[] | null | undefined
 }
 
 function TicketModal({ ticket, userId, project, users}: Props) {
@@ -43,6 +43,8 @@ function TicketModal({ ticket, userId, project, users}: Props) {
     ],
   });
   const projects = useQuery(GET_PROJECTS, {variables: {id: user?.id!}});
+
+  const [getProjectUsers, {data, loading }] = useLazyQuery(GET_PROJECT_USERS);
   
   const [projectID, setProjectID] = useState(ticket ? ticket.project_id : projects.data?.user?.projects?.length !== 0 ? projects?.data?.user?.projects![0].id! : "");
   const [userID, setUserID] = useState(userId || "");
@@ -57,6 +59,10 @@ function TicketModal({ ticket, userId, project, users}: Props) {
       setProjectID(projects?.data?.user?.projects![0].id!);
     }
   }, [projects.loading])
+
+  useEffect(() => {
+    getProjectUsers({ variables: { id: projectID } });
+  }, [projectID]);
 
   return (
     <>
@@ -74,19 +80,19 @@ function TicketModal({ ticket, userId, project, users}: Props) {
           as="form"
           onSubmit={async (e) => {
             e.preventDefault();
-              await createTicket({
-                  variables: {
-                    input: {
-                      name: ticketName,
-                      description: ticketDescription,
-                      type: ticketType,
-                      status: ticketStatus,
-                      priority: ticketPriority,
-                      user_id: userID || null,
-                      project_id: project ? project.id : projectID,
-                    },
-                  },
-                });
+            await createTicket({
+              variables: {
+                input: {
+                  name: ticketName,
+                  description: ticketDescription,
+                  type: ticketType,
+                  status: ticketStatus,
+                  priority: ticketPriority,
+                  user_id: userID || null,
+                  project_id: project ? project.id : projectID,
+                },
+              },
+            });
             error
               ? toast({
                   title: "Error creating ticket",
@@ -200,11 +206,17 @@ function TicketModal({ ticket, userId, project, users}: Props) {
                 onChange={(e) => setUserID(e.target.value)}
               >
                 <option value="">Unassigned</option>
-                {users?.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.username}
-                  </option>
-                ))}
+                {users
+                  ? users?.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.username}
+                      </option>
+                    ))
+                  : data?.project.users?.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.username}
+                      </option>
+                    ))}
               </Select>
             </FormControl>
           </ModalBody>
