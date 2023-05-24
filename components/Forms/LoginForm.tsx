@@ -1,3 +1,4 @@
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { User } from "../../UserProvider";
 import {
   Button,
@@ -14,6 +15,8 @@ import {
   Icon,
   AlertDescription,
   LightMode,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
@@ -37,6 +40,7 @@ export default function LoginForm({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [invalidLogin, setInvalidLogin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -88,6 +92,8 @@ export default function LoginForm({
       p="10"
       maxWidth="500px"
       color="black"
+      zIndex={1}
+      boxShadow='md'
     >
       <Heading as="h1" mb={10} fontFamily="inherit">
         Sign In
@@ -170,12 +176,34 @@ export default function LoginForm({
       <FormControl mt={4}>
         <FormLabel htmlFor="password">Password</FormLabel>
         <LightMode>
-          <Input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
+          <InputGroup>
+            <Input
+              sx={{
+                "&:-webkit-autofill, &:-webkit-autofill:focus": {
+                  transition: "background-color 600000s 0s, color 600000s 0s",
+                },
+              }}
+              type={showPassword ? "text" : "password"}
+              id="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+            <InputRightElement>
+              {showPassword ? (
+                <ViewOffIcon
+                  cursor="pointer"
+                  fontSize={"xl"}
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              ) : (
+                <ViewIcon
+                  cursor="pointer"
+                  fontSize={"xl"}
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              )}
+            </InputRightElement>
+          </InputGroup>
         </LightMode>
       </FormControl>
       <Button
