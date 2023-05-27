@@ -55,8 +55,8 @@ function AlertDialogDelete({ id, type, title, projectId, onCloseParent }: Props)
 
   return (
     <>
-      <Button variant='ghost' colorScheme="red" onClick={onOpen}>
-        Delete
+      <Button variant={type === 'project' ? 'outline' : 'ghost'} colorScheme="red" onClick={onOpen}>
+        {type === 'project' ? 'Delete Project' : 'Delete'}
       </Button>
       <AlertDialog
         isOpen={isOpen}
