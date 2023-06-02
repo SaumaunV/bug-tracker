@@ -7,6 +7,7 @@ import TicketModal from "../../components/Tickets/TicketModal";
 import AddUserModal from "../../components/Projects/AddUserModal";
 import ProjectInfoModal from "../../components/Projects/ProjectInfoModal";
 import TicketBoard from "../../components/Tickets/TicketBoard";
+import ProjectSettings from "../../components/Projects/ProjectSettings";
 
 function ProjectDetail() {
   const router = useRouter();
@@ -33,6 +34,7 @@ function ProjectDetail() {
             projectDesc={data?.project.description}
           />
           <AddUserModal project_id={data?.project.id!} userList={addUserList} />
+          <ProjectSettings projectName={data?.project.name!} projectDescription={data?.project.description!} id={data?.project.id!} />
           <TicketModal
             project={{
               id: router.query.projectId as string,
