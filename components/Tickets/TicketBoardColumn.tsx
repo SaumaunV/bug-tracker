@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Select, Textarea, Toast, useColorMode } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Heading, Select, Spinner, Textarea, Toast, useColorMode } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import TicketCard from './TicketCard';
 import { AddIcon } from '@chakra-ui/icons';
@@ -21,7 +21,7 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
   const [newTicketName, setNewTicketName ] = useState("");
   const [ticketType, setTicketType] = useState('bug');
   const [ticketPriority, setTicketPriority] = useState('low');
-  const [createTicket, { error }] = useMutation(CREATE_TICKET, {
+  const [createTicket, { loading, error }] = useMutation(CREATE_TICKET, {
     refetchQueries: [
       { query: GET_PROJECT, variables: { id: projectId } },
     ],
@@ -29,13 +29,24 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
   const light = colorMode === "light";
 
   return (
-    <Flex w="300px" direction="column" bg={light ? "gray.50" : "gray.700"} borderRadius="md" p={2}>
+    <Flex
+      w="300px"
+      direction="column"
+      bg={light ? "gray.50" : "gray.700"}
+      borderRadius="md"
+      p={2}
+    >
       <Heading fontSize="sm" m={3} textColor={light ? "gray.500" : "gray.400"}>
         {name}
       </Heading>
       {tickets?.map((ticket) => (
         <TicketCard key={ticket.id} ticket={ticket} users={users} />
       ))}
+      {loading && (
+        <Center h="80px" bg={light ? "white" : "gray.800"} rounded="sm">
+          <Spinner />
+        </Center>
+      )}
       {name === "NEW" && !newTicket && !isDemo ? (
         <Button
           mt={2}
@@ -45,15 +56,17 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
           bg={"inherit"}
           leftIcon={<AddIcon />}
           onClick={async () => setNewTicket(true)}
-          _hover={light ? {bg: "gray.200"} : {bg: "gray.600"}}
+          _hover={light ? { bg: "gray.200" } : { bg: "gray.600" }}
         >
           Create ticket
         </Button>
-      ) : name === "NEW" && newTicket && !isDemo? (
+      ) : name === "NEW" && newTicket && !isDemo ? (
         <Box
           bg={light ? "white" : "gray.800"}
           rounded="sm"
-          _focusWithin={{ boxShadow: `0 0 3px 2px ${ light ? 'cornflowerblue' : 'royalblue'}` }}
+          _focusWithin={{
+            boxShadow: `0 0 3px 2px ${light ? "cornflowerblue" : "royalblue"}`,
+          }}
         >
           <Textarea
             autoFocus
@@ -86,9 +99,8 @@ function TicketBoardColumn({ name, tickets, users, projectId }: Props) {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
-                  });                
-              }
-              else if(e.key === 'Escape' || e.key === 'Esc') {
+                  });
+              } else if (e.key === "Escape" || e.key === "Esc") {
                 e.preventDefault();
                 setNewTicket(false);
                 setNewTicketName("");

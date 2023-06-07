@@ -45,7 +45,6 @@ function TicketCardModal({ ticket, users, isOpen, onClose } : Props) {
 
     function checkUpdated(original: string, current: string) {
         if(original !== current){
-          console.log('changed value');
             setUpdate(true);
             setUpdateCount(updateCount + 1);
         }
