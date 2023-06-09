@@ -130,6 +130,14 @@ export const DELETE_PROJECT = gql(/* GraphQL */`
   }
 `);
 
+export const UPDATE_PROJECT = gql(/* GraphQL */ `
+  mutation UpdateProject($name: String!, $description: String, $id: ID!) {
+    updateProject(name: $name, description: $description, id: $id) {
+      id
+    }
+  }
+`);
+
 export const GET_TICKETS = gql(/* GraphQL */`
   query GetAllTickets {
     tickets {

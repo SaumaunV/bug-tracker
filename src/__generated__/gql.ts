@@ -25,6 +25,7 @@ const documents = {
     "\n  query GetAllProjects($id: ID!) {\n    user(id: $id) {\n      projects {\n        id\n        name\n        description\n      }\n    }\n  }\n": types.GetAllProjectsDocument,
     "\n  mutation CreateProject($input: CreateProjectInput!) {\n    createProject(input: $input) {\n      name\n      description\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n": types.DeleteProjectDocument,
+    "\n  mutation UpdateProject($name: String!, $description: String, $id: ID!) {\n    updateProject(name: $name, description: $description, id: $id) {\n      id\n    }\n  }\n": types.UpdateProjectDocument,
     "\n  query GetAllTickets {\n    tickets {\n      id\n      name\n      description\n      type\n      status\n      priority\n      user_id\n    }\n  }\n": types.GetAllTicketsDocument,
     "\n  query GetProjectTickets($id: ID!) {\n    projectTickets(id: $id) {\n      id\n      name\n      description\n      type\n      status\n      priority\n      user_id\n    }\n  }\n": types.GetProjectTicketsDocument,
     "\n  query GetUserTickets($id: ID!) {\n    userTickets(id: $id) {\n      id\n      name\n      description\n      type\n      status\n      priority\n      created_at\n      user_id\n      project_id\n    }\n  }\n": types.GetUserTicketsDocument,
@@ -81,6 +82,10 @@ export function gql(source: "\n  mutation CreateProject($input: CreateProjectInp
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation UpdateProject($name: String!, $description: String, $id: ID!) {\n    updateProject(name: $name, description: $description, id: $id) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProject($name: String!, $description: String, $id: ID!) {\n    updateProject(name: $name, description: $description, id: $id) {\n      id\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
