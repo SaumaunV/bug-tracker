@@ -16,6 +16,7 @@ import { CgProfile } from "react-icons/cg";
 import { useUser } from "../../UserProvider";
 import ProjectModal from "../Projects/ProjectModal";
 import TicketModal from "../Tickets/TicketModal";
+import { link } from "../../src/config";
 
 function Header() {
   const { setUser } = useUser();
@@ -28,7 +29,7 @@ function Header() {
     e.preventDefault();
     try {
       const resp = await fetch(
-        "https://bugtracker-backend.onrender.com/logout",
+        `${link}/logout`,
         {
           method: "POST",
           headers: {

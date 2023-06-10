@@ -8,10 +8,11 @@ import { NextPage } from "next";
 import { ReactNode } from "react";
 import Layout from "../components/Layout/Layout";
 import { Inter } from "@next/font/google";
+import { link } from '../src/config.js'
 
 const client = new ApolloClient({
   //uri: "http://localhost:4000/graphql",
-  uri: "https://bugtracker-backend.onrender.com/graphql",
+  uri: `${link}/graphql`,
   credentials: "include",
   cache: new InMemoryCache({
     typePolicies: {

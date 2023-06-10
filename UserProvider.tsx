@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { link } from "./src/config";
 
 export type User = {
     id: string;
@@ -37,7 +38,7 @@ export default function UserProvider({ children }: Props) {
         const getUser = async () =>{ 
             try {
                 const resp = await fetch(
-                  "https://bugtracker-backend.onrender.com/user",
+                  `${link}/user`,
                   {
                     credentials: "include",
                   }

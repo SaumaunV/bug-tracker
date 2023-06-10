@@ -20,8 +20,9 @@ import {
 } from "@chakra-ui/react";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
+import { link } from "../../src/config";
 
-const link = "https://bugtracker-backend.onrender.com/login";
+//const link = `${link}/login`;
 //const link = 'http://localhost:4000/login'
 
 interface Props {
@@ -44,7 +45,7 @@ export default function LoginForm({
 
   const handleSubmit = async (e: FormEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const resp = await fetch(link, {
+    const resp = await fetch(`${link}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
