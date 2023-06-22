@@ -3,6 +3,7 @@ import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, Al
 import React, { useRef } from 'react'
 import { DELETE_PROJECT, DELETE_TICKET, DELETE_USER, GET_PROJECT, GET_PROJECTS, GET_USERS, GET_USER_TICKETS } from '../graphql/queries';
 import { useUser } from '../UserProvider';
+import { useRouter } from 'next/router';
 
 interface Props {
   id: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 function AlertDialogDelete({ id, type, title, projectId, onCloseParent }: Props) {
+    const router = useRouter();
     const { user, isDemo } = useUser();
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,6 +52,7 @@ function AlertDialogDelete({ id, type, title, projectId, onCloseParent }: Props)
             isClosable: true,
           });
           onClose();
+          if(type === 'project') router.push('/projects');
           if(onCloseParent) onCloseParent();
     };
 
